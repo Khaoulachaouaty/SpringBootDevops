@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clinique-backend
+  namespace: clinique
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: clinique-backend
+  template:
+    metadata:
+      labels:
+        app: clinique-backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/clinique/actuator/prometheus"
+        prometheus.io/port: "8082"
+    spec:
+      containers:
+        - name: backend
+          image: khaoulachaouaty/clinique-backend:latest
+          ports:
+            - containerPort: 8082
+          envFrom:
+            - configMapRef:
+                name: backend-config
+          env:
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: clinique-secrets
+                  key: mysql-root-password
+          readinessProbe:
+            httpGet:
+              path: /clinique/actuator/health
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /clinique/actuator/health
+              port: 8082
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

@@ -1,1 +1,40 @@
 /.metadata/
+
+# Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Environment / secrets
+.env
+*.env.local
+*.env.*.local
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Kubernetes secrets (managed via kubectl create secret)
+k8s/secrets.yaml

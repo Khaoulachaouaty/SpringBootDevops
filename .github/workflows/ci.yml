@@ -1,0 +1,198 @@
+name: CI Pipeline — Clinique
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+env:
+  DOCKER_IMAGE_BACKEND: ${{ secrets.DOCKER_USERNAME }}/clinique-backend
+  DOCKER_IMAGE_FRONTEND: ${{ secrets.DOCKER_USERNAME }}/clinique-frontend
+
+jobs:
+  # ─────────────────────────────────────────
+  #  BACKEND: lint → test → build → sonar → docker
+  # ─────────────────────────────────────────
+  backend-ci:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed for SonarCloud blame info
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: temurin
+          cache: maven
+
+      - name: Lint — Checkstyle
+        run: mvn checkstyle:check -q
+
+      - name: Unit tests
+        run: mvn test -Dspring.profiles.active=test
+
+      - name: Build JAR
+        run: mvn package -DskipTests -q
+
+      - name: SonarCloud analysis
+        run: >
+          mvn sonar:sonar
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE_BACKEND }}:${{ github.sha }} .
+          docker tag ${{ env.DOCKER_IMAGE_BACKEND }}:${{ github.sha }} ${{ env.DOCKER_IMAGE_BACKEND }}:latest
+
+      - name: Push Docker image to Docker Hub
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push ${{ env.DOCKER_IMAGE_BACKEND }}:${{ github.sha }}
+          docker push ${{ env.DOCKER_IMAGE_BACKEND }}:latest
+
+  # ─────────────────────────────────────────
+  #  FRONTEND: lint → test → build → docker
+  # ─────────────────────────────────────────
+  frontend-ci:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint — ESLint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test -- --watch=false --browsers=ChromeHeadless --no-progress
+
+      - name: Build (production)
+        run: npm run build -- --configuration production
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE_FRONTEND }}:${{ github.sha }} .
+          docker tag ${{ env.DOCKER_IMAGE_FRONTEND }}:${{ github.sha }} ${{ env.DOCKER_IMAGE_FRONTEND }}:latest
+
+      - name: Push Docker image to Docker Hub
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push ${{ env.DOCKER_IMAGE_FRONTEND }}:${{ github.sha }}
+          docker push ${{ env.DOCKER_IMAGE_FRONTEND }}:latest
+
+  # ─────────────────────────────────────────
+  #  DEVSECOPS: dependency scan + image scan
+  # ─────────────────────────────────────────
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: [backend-ci, frontend-ci]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: temurin
+          cache: maven
+
+      - name: OWASP Dependency Check (backend)
+        working-directory: backend
+        run: mvn dependency-check:check
+        continue-on-error: false
+
+      - name: npm audit (frontend)
+        working-directory: frontend
+        run: npm audit --audit-level=critical
+
+      - name: Build backend image for Trivy scan
+        working-directory: backend
+        run: docker build -t clinique-backend-scan:latest .
+
+      - name: Trivy — scan backend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: clinique-backend-scan:latest
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: CRITICAL
+
+      - name: Build frontend image for Trivy scan
+        working-directory: frontend
+        run: docker build -t clinique-frontend-scan:latest .
+
+      - name: Trivy — scan frontend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: clinique-frontend-scan:latest
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: CRITICAL
+
+  # ─────────────────────────────────────────
+  #  GITOPS: update image tag → triggers ArgoCD
+  # ─────────────────────────────────────────
+  update-k8s-image:
+    name: Update K8s image tag (GitOps)
+    runs-on: ubuntu-latest
+    needs: [security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update backend image tag in k8s manifest
+        run: |
+          sed -i "s|image: .*/clinique-backend:.*|image: ${{ env.DOCKER_IMAGE_BACKEND }}:${{ github.sha }}|g" \
+            k8s/backend/deployment.yaml
+
+      - name: Update frontend image tag in k8s manifest
+        run: |
+          sed -i "s|image: .*/clinique-frontend:.*|image: ${{ env.DOCKER_IMAGE_FRONTEND }}:${{ github.sha }}|g" \
+            k8s/frontend/deployment.yaml
+
+      - name: Commit and push updated manifests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add k8s/backend/deployment.yaml k8s/frontend/deployment.yaml
+          git diff --staged --quiet || git commit -m "ci: update image tags to ${{ github.sha }}"
+          git push
