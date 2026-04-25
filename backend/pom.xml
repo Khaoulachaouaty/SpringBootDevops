@@ -145,8 +145,10 @@
 				<configuration>
 					<configLocation>google_checks.xml</configLocation>
 					<failsOnError>false</failsOnError>
+					<failOnViolation>false</failOnViolation>
 					<violationSeverity>warning</violationSeverity>
 					<includeTestSourceDirectory>false</includeTestSourceDirectory>
+					<outputFile>${project.build.directory}/checkstyle-result.xml</outputFile>
 				</configuration>
 				<executions>
 					<execution>

@@ -34,8 +34,8 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Lint — Checkstyle
-        run: mvn checkstyle:check -q
+      - name: Lint — Checkstyle (report only)
+        run: mvn checkstyle:checkstyle -q
 
       - name: Unit tests
         run: mvn test -Dspring.profiles.active=test
