@@ -1,0 +1,42 @@
+.admin-page {
+  background: linear-gradient(135deg, #f0fdf4 0%, #fafaf9 100%);
+  min-height: calc(100vh - 70px);
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  border-radius: 1.5rem;
+}
+
+.form-control, .form-select {
+  border-radius: 0.75rem;
+  border: 2px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 0.25rem rgba(245, 158, 11, 0.1);
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.invalid-feedback {
+  display: block;
+  margin-top: 0.25rem;
+}

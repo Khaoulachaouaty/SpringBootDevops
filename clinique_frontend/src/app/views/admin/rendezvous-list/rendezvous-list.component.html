@@ -1,0 +1,278 @@
+<div class="admin-page">
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold text-success mb-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-calendar-check me-2" viewBox="0 0 16 16">
+            <path d="M10.854 8.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.293l2.646-2.647a.5.5 0 0 1 .708 0"/>
+            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4zm11-9H1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1"/>
+          </svg>
+          Gestion des Rendez-vous
+        </h2>
+        <p class="text-muted mb-0 ms-5">{{ filteredRendezVous.length }} / {{ rendezVous.length }} rendez-vous</p>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    @if (errorMessage) {
+      <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
+          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+        </svg>
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+    }
+    @if (successMessage) {
+      <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16">
+          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+    }
+
+    <!-- Filtres -->
+    <div class="card border-0 shadow-sm mb-4 rounded-4">
+      <div class="card-body p-4">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label small text-muted fw-semibold mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-search me-1" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+              </svg>
+              Rechercher
+            </label>
+            <input type="text" class="form-control" placeholder="Patient, médecin, motif..." 
+                   [value]="searchTerm" (input)="onSearch($event)">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small text-muted fw-semibold mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-funnel me-1" viewBox="0 0 16 16">
+                <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+              </svg>
+              Statut
+            </label>
+            <select class="form-select" [value]="selectedStatut" (change)="onStatutChange($event)">
+              <option value="">Tous les statuts</option>
+              @for (statut of statuts; track statut) {
+                <option [value]="statut">{{ getStatutLabel(statut) }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small text-muted fw-semibold mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-calendar me-1" viewBox="0 0 16 16">
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+              </svg>
+              Date
+            </label>
+            <input type="date" class="form-control" [value]="selectedDate" (change)="onDateChange($event)">
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-outline-secondary w-100" (click)="clearFilters()" 
+                    [disabled]="!searchTerm && !selectedStatut && !selectedDate">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise me-2" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+              </svg>
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="text-muted mt-3">Chargement des rendez-vous...</p>
+      </div>
+    } @else {
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+              <tr>
+                <th class="ps-4 py-3 text-uppercase small text-muted fw-bold">Date & Heure</th>
+                <th class="py-3 text-uppercase small text-muted fw-bold">Patient</th>
+                <th class="py-3 text-uppercase small text-muted fw-bold">Médecin</th>
+                <th class="py-3 text-uppercase small text-muted fw-bold">Motif</th>
+                <th class="py-3 text-uppercase small text-muted fw-bold">Statut</th>
+                <th class="text-end pe-4 py-3 text-uppercase small text-muted fw-bold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (rdv of filteredRendezVous; track rdv.id) {
+                <tr class="rdv-row">
+                  <td class="ps-4 py-3">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="calendar-icon bg-success bg-opacity-10 text-success rounded-3 p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="fw-semibold mb-0">{{ formatDate(rdv.date) }}</p>
+                        <small class="text-muted">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-clock me-1" viewBox="0 0 16 16">
+                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                          </svg>
+                          {{ rdv.heure }}
+                        </small>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-3">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="avatar-sm bg-primary bg-opacity-10 text-primary fw-bold rounded-circle">
+                        {{ rdv.patientPrenom.charAt(0) }}{{ rdv.patientNom.charAt(0) }}
+                      </div>
+                      <span class="fw-medium">{{ rdv.patientPrenom }} {{ rdv.patientNom }}</span>
+                    </div>
+                  </td>
+                  <td class="py-3">
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="avatar-sm bg-warning bg-opacity-10 text-warning fw-bold rounded-circle">
+                        {{ rdv.medecinPrenom.charAt(0) }}{{ rdv.medecinNom.charAt(0) }}
+                      </div>
+                      <span class="fw-medium">Dr. {{ rdv.medecinPrenom }} {{ rdv.medecinNom }}</span>
+                    </div>
+                  </td>
+                  <td class="py-3">
+                    <span class="text-muted">{{ rdv.motif || 'Non spécifié' }}</span>
+                  </td>
+                  <td class="py-3">
+                    <span class="badge {{ getStatutBadgeClass(rdv.statut) }} px-3 py-2 rounded-pill fw-medium">
+                      {{ getStatutLabel(rdv.statut) }}
+                    </span>
+                  </td>
+                  <td class="text-end pe-4 py-3">
+                    <!-- Détails -->
+                    <button class="btn btn-icon btn-details me-2" (click)="openDetails(rdv)" title="Voir détails">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                        <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                      </svg>
+                    </button>
+                    
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="text-center py-5">
+                    <div class="empty-state">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-calendar-x text-muted opacity-25 mb-3" viewBox="0 0 16 16">
+                        <path d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708"/>
+                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4zm11-9H1a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1"/>
+                      </svg>
+                      <h5 class="text-muted">Aucun rendez-vous trouvé</h5>
+                      <p class="text-muted small mb-3">Essayez de modifier vos critères de recherche</p>
+                      <button class="btn btn-outline-success" (click)="clearFilters()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-counterclockwise me-2" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                          <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                        </svg>
+                        Réinitialiser
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Modal Détails RDV -->
+@if (showDetailsModal && selectedRdv) {
+  <div class="modal-backdrop show" (click)="closeDetails()"></div>
+  <div class="modal show d-block">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header bg-success text-white border-0">
+          <h5 class="modal-title fw-bold">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-calendar-check-fill me-2" viewBox="0 0 16 16">
+              <path d="M4 .5a.5.5 0 0 1 .5-.5h1V.5a.5.5 0 0 1 1 0V1h1.5a.5.5 0 0 1 0 1h-1V2a.5.5 0 0 1-1 0V1h-1a.5.5 0 0 1-.5-.5M16 2a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2zM0 5h16v9a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm10.854 8.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708.708L8.707 10l2.147 2.146z"/>
+            </svg>
+            Détails du rendez-vous
+          </h5>
+          <button class="btn-close btn-close-white" (click)="closeDetails()"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="text-center mb-4">
+            <div class="calendar-icon-lg bg-success bg-opacity-10 text-success mx-auto rounded-3 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+              </svg>
+            </div>
+            <h4 class="fw-bold mb-1">{{ formatDate(selectedRdv.date) }}</h4>
+            <p class="text-muted mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock me-2" viewBox="0 0 16 16">
+                <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+              </svg>
+              {{ selectedRdv.heure }}
+            </p>
+            <span class="badge {{ getStatutBadgeClass(selectedRdv.statut) }} px-3 py-2 rounded-pill">
+              {{ getStatutLabel(selectedRdv.statut) }}
+            </span>
+          </div>
+          
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3">
+                <h6 class="fw-bold text-primary mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person me-2" viewBox="0 0 16 16">
+                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                  </svg>
+                  Patient
+                </h6>
+                <p class="fw-semibold mb-1">{{ selectedRdv.patientPrenom }} {{ selectedRdv.patientNom }}</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-3">
+                <h6 class="fw-bold text-warning mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-pulse me-2" viewBox="0 0 16 16">
+                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053.918 3.995.78 5.323 1.508 7H.43c-2.128-5.697 4.165-8.83 7.394-5.857.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17c3.23-2.974 9.522.159 7.394 5.856h-1.078c.728-1.677.59-3.005.108-3.947C13.486.878 10.4.28 8.717 2.01zM2.212 10h1.315c2.273 0 4.39.543 6.286 1.506a.5.5 0 0 0 .5-.001c1.9-.964 4.018-1.506 6.291-1.506h1.319c1.157 0 2.14.435 2.854 1.23.713.794 1.033 1.87.846 2.95-.187 1.08-.835 2.012-1.79 2.558a.5.5 0 0 0-.5.001c-1.044.596-2.304.911-3.617.911-1.503 0-2.917-.433-4.137-1.185a.5.5 0 0 0-.5.001C6.916 15.567 5.502 16 4 16c-1.313 0-2.573-.315-3.617-.91a.5.5 0 0 0-.5-.001c-.955-.547-1.603-1.479-1.79-2.558-.187-1.08.133-2.156.846-2.95C.873 10.435 1.855 10 2.212 10M8 14a2 2 0 0 1-1.995-1.85L6 12.05V11.5a.5.5 0 0 0-1 0v.5a2 2 0 0 0 2 2h.5a.5.5 0 0 0 0-1z"/>
+                  </svg>
+                  Médecin
+                </h6>
+                <p class="fw-semibold mb-1">Dr. {{ selectedRdv.medecinPrenom }} {{ selectedRdv.medecinNom }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3 p-3 bg-light rounded-3">
+            <h6 class="fw-bold text-muted mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard me-2" viewBox="0 0 16 16">
+                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+              </svg>
+              Motif
+            </h6>
+            <p class="mb-0">{{ selectedRdv.motif || 'Non spécifié' }}</p>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button class="btn btn-light rounded-pill px-4" (click)="closeDetails()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg me-2" viewBox="0 0 16 16">
+              <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            </svg>
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

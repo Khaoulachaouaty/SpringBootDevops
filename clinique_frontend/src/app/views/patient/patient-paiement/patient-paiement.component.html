@@ -1,0 +1,119 @@
+<div class="paiement-container">
+  <div class="container-fluid px-4 py-4">
+    
+    <!-- En-tête -->
+    <div class="paiement-header mb-4">
+      <div class="header-left">
+        <div class="header-icon">
+          <i class="bi bi-credit-card"></i>
+        </div>
+        <div>
+          <h2>Mes Paiements</h2>
+          <p>Consultez et gérez vos factures</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="stats-grid mb-4">
+      <div class="stat-card total">
+        <div class="stat-icon">
+          <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ formatMontant(totalAPayer) }}</span>
+          <span class="stat-label">Total à payer</span>
+        </div>
+      </div>
+      <div class="stat-card paid">
+        <div class="stat-icon">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ formatMontant(totalPaye) }}</span>
+          <span class="stat-label">Déjà payé</span>
+        </div>
+      </div>
+      <div class="stat-card pending">
+        <div class="stat-icon">
+          <i class="bi bi-clock-history"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ formatMontant(totalAPayer - totalPaye) }}</span>
+          <span class="stat-label">Reste à payer</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-wrapper">
+      <div class="spinner-modern">
+        <div class="spinner-ring"></div>
+      </div>
+      <p class="mt-3 text-muted">Chargement de vos factures...</p>
+    </div>
+
+    <!-- Liste des factures -->
+    <div class="factures-card" *ngIf="!loading">
+      <div class="card-header-custom">
+        <i class="bi bi-receipt"></i>
+        <h5>Historique des factures</h5>
+        <span class="badge-count">{{ consultations.length }} facture(s)</span>
+      </div>
+      <div class="card-body-custom p-0">
+        
+        <div *ngIf="consultations.length === 0" class="empty-state">
+          <i class="bi bi-receipt"></i>
+          <p>Aucune facture disponible</p>
+        </div>
+
+        <div class="factures-list" *ngIf="consultations.length > 0">
+          <div *ngFor="let consultation of consultations" class="facture-item">
+            
+            <div class="facture-date">
+              <span class="day">{{ consultation.dateConsultation | date:'dd' }}</span>
+              <span class="month">{{ consultation.dateConsultation | date:'MMM' | uppercase }}</span>
+              <span class="year">{{ consultation.dateConsultation | date:'yyyy' }}</span>
+            </div>
+
+            <div class="facture-details">
+              <div class="facture-header">
+                <h6>
+                  <i class="bi bi-person-badge"></i>
+                  Dr. {{ consultation.medecinPrenom }} {{ consultation.medecinNom }}
+                </h6>
+                <span class="specialite-badge">{{ consultation.medecinSpecialite }}</span>
+              </div>
+
+              <div class="facture-diagnostic">
+                <strong>Diagnostic:</strong> {{ consultation.diagnostic }}
+              </div>
+
+              <div class="facture-footer">
+                <div class="price">
+                  <i class="bi bi-cash-stack"></i>
+                  {{ formatMontant(consultation.montantTotal || consultation.prixConsultation) }}
+                </div>
+                <span class="status-badge" [class]="consultation.statutPaiement === 'PAYE' ? 'paid' : 'pending'">
+                  <i class="bi" [class.bi-check-circle-fill]="consultation.statutPaiement === 'PAYE'" 
+                               [class.bi-clock-fill]="consultation.statutPaiement !== 'PAYE'"></i>
+                  {{ consultation.statutPaiement === 'PAYE' ? 'Payé' : 'En attente' }}
+                </span>
+                <button class="btn-payment" 
+                        *ngIf="consultation.statutPaiement === 'EN_ATTENTE'"
+                        (click)="payerFacture(consultation)">
+                  <i class="bi bi-credit-card"></i> Payer
+                </button>
+                <button class="btn-facture" 
+                        (click)="voirFacture(consultation.id)">
+                  <i class="bi bi-receipt"></i> Voir facture
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

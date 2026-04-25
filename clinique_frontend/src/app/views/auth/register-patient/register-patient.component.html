@@ -1,0 +1,247 @@
+<div class="auth-wrapper">
+  <div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100 py-5">
+      <div class="col-md-5 col-lg-4">
+        <div class="auth-card animate-fade-in-up">
+          <!-- Logo -->
+          <div class="text-center mb-3">
+            <div class="brand-icon text-white mx-auto mb-3 d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" 
+                   width="40" 
+                   height="40" 
+                   viewBox="0 0 24 24" 
+                   fill="none" 
+                   stroke="currentColor" 
+                   stroke-width="2.5" 
+                   stroke-linecap="round" 
+                   stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+              </svg>
+            </div>
+            <h2 class="fw-bold text-success mb-1">MediClinic</h2>
+            <p class="text-muted small">Créer votre compte</p>
+          </div>
+
+          <!-- Progress -->
+          <div class="progress-steps mb-3">
+            <div class="step" [class.active]="currentStep === 1"></div>
+            <div class="step-line"></div>
+            <div class="step" [class.active]="currentStep === 2"></div>
+          </div>
+
+          <!-- Alerts -->
+          @if (errorMessage) {
+            <div class="alert alert-danger d-flex align-items-center mb-3 py-2">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i>
+              <small>{{ errorMessage }}</small>
+            </div>
+          }
+
+          @if (successMessage) {
+            <div class="alert alert-success d-flex align-items-center mb-3 py-2">
+              <i class="bi bi-check-circle-fill me-2"></i>
+              <small>{{ successMessage }}</small>
+            </div>
+          }
+
+          <!-- ÉTAPE 1: Identité -->
+          @if (currentStep === 1) {
+            <form [formGroup]="registerForm" (ngSubmit)="nextStep()">
+              <h6 class="text-success fw-semibold mb-3">
+                <i class="bi bi-person-vcard me-2"></i>Votre identité
+              </h6>
+
+              <div class="row g-2 mb-2">
+                <div class="col-6">
+                  <label class="form-label small text-muted mb-1">Nom *</label>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched"
+                    formControlName="nom"
+                    placeholder="Jouini">
+                  @if (registerForm.get('nom')?.invalid && registerForm.get('nom')?.touched) {
+                    <div class="invalid-feedback d-block small">Nom requis (min 2 caractères)</div>
+                  }
+                </div>
+                <div class="col-6">
+                  <label class="form-label small text-muted mb-1">Prénom *</label>
+                  <input 
+                    type="text" 
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched"
+                    formControlName="prenom"
+                    placeholder="Fatma">
+                  @if (registerForm.get('prenom')?.invalid && registerForm.get('prenom')?.touched) {
+                    <div class="invalid-feedback d-block small">Prénom requis (min 2 caractères)</div>
+                  }
+                </div>
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label small text-muted mb-1">Email *</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="bi bi-envelope text-muted small"></i>
+                  </span>
+                  <input 
+                    type="email" 
+                    class="form-control border-start-0 ps-0"
+                    [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+                    formControlName="email"
+                    placeholder="fatma@email.com">
+                </div>
+                @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+                  <div class="invalid-feedback d-block small">Email valide requis</div>
+                }
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted mb-1">Téléphone</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="bi bi-telephone text-muted small"></i>
+                  </span>
+                  <input 
+                    type="tel" 
+                    class="form-control border-start-0 ps-0"
+                    [class.is-invalid]="registerForm.get('tel')?.invalid && registerForm.get('tel')?.touched"
+                    formControlName="tel"
+                    placeholder="20145972">
+                </div>
+                @if (registerForm.get('tel')?.invalid && registerForm.get('tel')?.touched) {
+                  <div class="invalid-feedback d-block small">8 chiffres requis</div>
+                }
+              </div>
+
+              <!-- Bouton Continuer amélioré -->
+              <button 
+                type="submit" 
+                class="btn btn-gradient w-100 py-2">
+                Continuer<i class="bi bi-arrow-right ms-2"></i>
+              </button>
+            </form>
+          }
+
+          <!-- ÉTAPE 2: Sécurité -->
+          @if (currentStep === 2) {
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+              <h6 class="text-success fw-semibold mb-3">
+                <i class="bi bi-shield-lock me-2"></i>Sécurité
+              </h6>
+
+              <div class="mb-2">
+                <label class="form-label small text-muted mb-1">Date naissance *</label>
+                <input 
+                  type="date" 
+                  class="form-control form-control-sm"
+                  [class.is-invalid]="registerForm.get('dateNaissance')?.invalid && registerForm.get('dateNaissance')?.touched"
+                  formControlName="dateNaissance">
+                @if (registerForm.get('dateNaissance')?.invalid && registerForm.get('dateNaissance')?.touched) {
+                  <div class="invalid-feedback d-block small">Date de naissance requise</div>
+                }
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label small text-muted mb-1">Mot de passe *</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="bi bi-lock text-muted small"></i>
+                  </span>
+                  <input 
+                    [type]="showPassword ? 'text' : 'password'"
+                    class="form-control border-start-0 border-end-0 ps-0"
+                    [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+                    formControlName="password"
+                    placeholder="6 caractères min.">
+                  <button 
+                    type="button" 
+                    class="input-group-text bg-light border-start-0 py-0"
+                    (click)="showPassword = !showPassword">
+                    <i class="bi small" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                  </button>
+                </div>
+                @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+                  <div class="invalid-feedback d-block small">Mot de passe requis (min 6 caractères)</div>
+                }
+              </div>
+
+              <div class="mb-2">
+                <label class="form-label small text-muted mb-1">Confirmer *</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="bi bi-lock-fill text-muted small"></i>
+                  </span>
+                  <input 
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    class="form-control border-start-0 border-end-0 ps-0"
+                    [class.is-invalid]="(registerForm.get('confirmPassword')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('confirmPassword')?.touched"
+                    formControlName="confirmPassword"
+                    placeholder="Répéter le mot de passe">
+                  <button 
+                    type="button" 
+                    class="input-group-text bg-light border-start-0 py-0"
+                    (click)="showConfirmPassword = !showConfirmPassword">
+                    <i class="bi small" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
+                  </button>
+                </div>
+                @if (registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
+                  <div class="invalid-feedback d-block small">Les mots de passe ne correspondent pas</div>
+                }
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label small text-muted mb-1">Dossier médical</label>
+                <textarea 
+                  class="form-control form-control-sm"
+                  formControlName="dossierMedical"
+                  rows="2"
+                  placeholder="Allergies, antécédents..."></textarea>
+              </div>
+
+              <div class="d-flex gap-2">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary flex-grow-1 py-2"
+                  (click)="prevStep()">
+                  <i class="bi bi-arrow-left me-1"></i>Retour
+                </button>
+                <!-- Bouton Créer amélioré -->
+                <button 
+                  type="submit" 
+                  class="btn btn-gradient flex-grow-1 py-2"
+                  [disabled]="isLoading">
+                  @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-1"></span>
+                    <span>Création...</span>
+                  } @else {
+                    <i class="bi bi-check-lg me-1"></i>Créer
+                  }
+                </button>
+              </div>
+            </form>
+          }
+
+          <!-- Divider -->
+          <div class="divider my-3">
+            <span class="divider-text">ou</span>
+          </div>
+
+          <!-- Footer -->
+          <p class="text-center text-muted small mb-2">
+            Déjà inscrit ? 
+            <a routerLink="/login" class="text-success fw-semibold text-decoration-none">
+              Se connecter
+            </a>
+          </p>
+
+          <div class="text-center">
+            <a routerLink="/welcome" class="small text-muted text-decoration-none">
+              <i class="bi bi-arrow-left me-1"></i>Accueil
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

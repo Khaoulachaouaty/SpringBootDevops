@@ -1,0 +1,295 @@
+<div class="consultation-container">
+  <div class="consultation-wrapper">
+    
+    <!-- Header -->
+    <div class="consultation-header">
+      <div class="header-left">
+        <button type="button" class="header-back-btn" (click)="retourListeRdv()" title="Retour">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <div>
+          <h1 class="header-title">Nouvelle Consultation</h1>
+          <p class="header-subtitle">Étape {{ currentStep }} sur {{ totalSteps }}</p>
+        </div>
+      </div>
+      <div class="header-badge">
+        <i class="bi bi-file-medical-fill"></i>
+        <span>Consultation</span>
+      </div>
+    </div>
+
+    <!-- Barre de progression -->
+    <div class="progress-steps">
+      <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+        <div class="step-circle">1</div>
+        <span class="step-label">Diagnostic</span>
+      </div>
+      <div class="step-line" [class.active]="currentStep > 1"></div>
+      <div class="step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+        <div class="step-circle">2</div>
+        <span class="step-label">Traitement</span>
+      </div>
+      <div class="step-line" [class.active]="currentStep > 2"></div>
+      <div class="step" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3">
+        <div class="step-circle">3</div>
+        <span class="step-label">Facturation</span>
+      </div>
+      <div class="step-line" [class.active]="currentStep > 3"></div>
+      <div class="step" [class.active]="currentStep >= 4">
+        <div class="step-circle">4</div>
+        <span class="step-label">Confirmation</span>
+      </div>
+    </div>
+
+    <!-- Patient Card -->
+    <div class="patient-card">
+      <div class="patient-avatar">
+        {{ getInitials(patientPrenom, patientNom) }}
+      </div>
+      <div class="patient-info">
+        <h2 class="patient-name">{{ patientPrenom }} {{ patientNom }}</h2>
+        <p class="patient-motif">{{ rdvMotif || 'Consultation générale' }}</p>
+        <div class="patient-meta">
+          <span class="meta-chip"><i class="bi bi-calendar3"></i> {{ rdvDate | date:'dd/MM/yyyy' }}</span>
+          <span class="meta-chip"><i class="bi bi-clock"></i> {{ rdvHeure }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulaire -->
+    <form [formGroup]="consultationForm">
+      
+      <!-- ÉTAPE 1 : Diagnostic -->
+      <div class="form-step" *ngIf="currentStep === 1">
+        <div class="step-card">
+          <div class="step-icon"><i class="bi bi-clipboard2-pulse"></i></div>
+          <div class="step-title">
+            <h3>Diagnostic médical</h3>
+            <p>Informations cliniques du patient</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required">Diagnostic</label>
+          <textarea formControlName="diagnostic"
+                    class="form-control"
+                    rows="4"
+                    placeholder="Décrivez le diagnostic du patient...">
+          </textarea>
+          <div class="form-error" *ngIf="consultationForm.get('diagnostic')?.invalid && consultationForm.get('diagnostic')?.touched">
+            <i class="bi bi-exclamation-triangle-fill"></i> Le diagnostic est requis (minimum 10 caractères)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Notes préliminaires</label>
+          <textarea formControlName="notes"
+                    class="form-control"
+                    rows="2"
+                    placeholder="Observations initiales...">
+          </textarea>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 : Traitement -->
+      <div class="form-step" *ngIf="currentStep === 2">
+        <div class="step-card">
+          <div class="step-icon"><i class="bi bi-capsule"></i></div>
+          <div class="step-title">
+            <h3>Traitement & Ordonnance</h3>
+            <p>Prescriptions médicales</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Traitement</label>
+          <textarea formControlName="traitement"
+                    class="form-control"
+                    rows="3"
+                    placeholder="Traitement recommandé...">
+          </textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ordonnance</label>
+          <textarea formControlName="ordonnance"
+                    class="form-control"
+                    rows="3"
+                    placeholder="Liste des médicaments prescrits...">
+          </textarea>
+        </div>
+
+        <div class="info-card">
+          <i class="bi bi-info-circle-fill"></i>
+          <div>
+            <strong>Information</strong>
+            <p>L'ordonnance sera imprimable et envoyée au patient par email.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 : Facturation -->
+      <div class="form-step" *ngIf="currentStep === 3">
+        <div class="step-card">
+          <div class="step-icon"><i class="bi bi-receipt"></i></div>
+          <div class="step-title">
+            <h3>Facturation</h3>
+            <p>Montants en Dinars Tunisiens (TND)</p>
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="form-group">
+            <label class="form-label required">Prix consultation</label>
+            <div class="input-with-icon">
+              <i class="bi bi-cash-stack"></i>
+              <input type="number"
+                     formControlName="prixConsultation"
+                     class="form-control"
+                     min="1"
+                     step="10"
+                     placeholder="0">
+              <span class="input-suffix">TND</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Médicaments</label>
+            <div class="input-with-icon">
+              <i class="bi bi-capsule"></i>
+              <input type="number"
+                     formControlName="montantMedicaments"
+                     class="form-control"
+                     min="0"
+                     step="10"
+                     placeholder="0">
+              <span class="input-suffix">TND</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Récapitulatif -->
+        <div class="total-card">
+          <div class="total-header">
+            <i class="bi bi-calculator-fill"></i>
+            <span>Récapitulatif</span>
+          </div>
+          <div class="total-details">
+            <div class="total-line">
+              <span>Consultation</span>
+              <span>{{ consultationForm.get('prixConsultation')?.value || 0 }} TND</span>
+            </div>
+            <div class="total-line" *ngIf="consultationForm.get('montantMedicaments')?.value">
+              <span>Médicaments</span>
+              <span>{{ consultationForm.get('montantMedicaments')?.value || 0 }} TND</span>
+            </div>
+            <div class="total-divider"></div>
+            <div class="grand-total">
+              <span>Total à payer</span>
+              <span class="grand-total-value">{{ montantTotal }} TND</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paiement -->
+        <div class="payment-group">
+          <label class="form-label required">Statut de paiement</label>
+          <div class="payment-options">
+            <div class="payment-option" [class.active]="consultationForm.get('statutPaiement')?.value === 'EN_ATTENTE'">
+              <input type="radio" id="payment-en-attente" formControlName="statutPaiement" value="EN_ATTENTE">
+              <label for="payment-en-attente">
+                <div class="option-icon"><i class="bi bi-hourglass-split"></i></div>
+                <div class="option-text">
+                  <strong>En attente</strong>
+                  <small>Patient n'a pas encore payé</small>
+                </div>
+                <i class="bi bi-check-circle-fill option-check"></i>
+              </label>
+            </div>
+            <div class="payment-option" [class.active]="consultationForm.get('statutPaiement')?.value === 'PAYE'">
+              <input type="radio" id="payment-paye" formControlName="statutPaiement" value="PAYE">
+              <label for="payment-paye">
+                <div class="option-icon success"><i class="bi bi-check-circle-fill"></i></div>
+                <div class="option-text">
+                  <strong>Payé</strong>
+                  <small>Patient a déjà payé</small>
+                </div>
+                <i class="bi bi-check-circle-fill option-check"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 4 : Confirmation -->
+      <div class="form-step" *ngIf="currentStep === 4">
+        <div class="step-card">
+          <div class="step-icon"><i class="bi bi-check-circle-fill"></i></div>
+          <div class="step-title">
+            <h3>Confirmation</h3>
+            <p>Vérifiez les informations avant finalisation</p>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-section">
+            <div class="summary-header"><i class="bi bi-clipboard2-pulse"></i> Diagnostic</div>
+            <div class="summary-content">{{ consultationForm.get('diagnostic')?.value || 'Non renseigné' }}</div>
+          </div>
+          <div class="summary-section" *ngIf="consultationForm.get('traitement')?.value">
+            <div class="summary-header"><i class="bi bi-capsule"></i> Traitement</div>
+            <div class="summary-content">{{ consultationForm.get('traitement')?.value }}</div>
+          </div>
+          <div class="summary-section" *ngIf="consultationForm.get('ordonnance')?.value">
+            <div class="summary-header"><i class="bi bi-prescription2"></i> Ordonnance</div>
+            <div class="summary-content">{{ consultationForm.get('ordonnance')?.value }}</div>
+          </div>
+          <div class="summary-section">
+            <div class="summary-header"><i class="bi bi-calculator-fill"></i> Montants</div>
+            <div class="summary-content">
+              Consultation: {{ consultationForm.get('prixConsultation')?.value || 0 }} TND<br>
+              Médicaments: {{ consultationForm.get('montantMedicaments')?.value || 0 }} TND<br>
+              <strong>Total: {{ montantTotal }} TND</strong>
+            </div>
+          </div>
+          <div class="summary-section">
+            <div class="summary-header"><i class="bi bi-credit-card"></i> Paiement</div>
+            <div class="summary-content">
+              <span class="badge" [class.badge-warning]="consultationForm.get('statutPaiement')?.value === 'EN_ATTENTE'"
+                                 [class.badge-success]="consultationForm.get('statutPaiement')?.value === 'PAYE'">
+                {{ consultationForm.get('statutPaiement')?.value === 'EN_ATTENTE' ? 'En attente' : 'Payé' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card warning">
+          <i class="bi bi-shield-check"></i>
+          <div>
+            <strong>Validation finale</strong>
+            <p>En confirmant, la consultation sera enregistrée et la facture générée automatiquement.</p>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Boutons navigation -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="previousStep()" *ngIf="currentStep > 1">
+        <i class="bi bi-chevron-left"></i> Précédent
+      </button>
+      <button type="button" class="btn-secondary" (click)="retourListeRdv()" *ngIf="currentStep === 1">
+        <i class="bi bi-x-lg"></i> Annuler
+      </button>
+      
+      <button type="button" class="btn-primary" (click)="nextStep()" *ngIf="currentStep < totalSteps">
+        Suivant <i class="bi bi-chevron-right"></i>
+      </button>
+      <button type="submit" class="btn-primary btn-success" [disabled]="saving || consultationForm.invalid" 
+              (click)="saveConsultation()" *ngIf="currentStep === totalSteps">
+        <i class="bi" [class.bi-save]="!saving" [class.bi-hourglass-split]="saving"></i>
+        {{ saving ? 'Enregistrement...' : 'Finaliser la consultation' }}
+      </button>
+    </div>
+  </div>
+</div>

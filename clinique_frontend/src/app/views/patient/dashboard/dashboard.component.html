@@ -1,0 +1,164 @@
+<div class="patient-dashboard">
+  <div class="container-fluid px-4 py-4">
+    
+    <!-- En-tête avec bienvenue -->
+    <div class="welcome-header mb-4">
+      <div class="welcome-left">
+        <div class="welcome-avatar">
+          {{ getInitials() }}
+        </div>
+        <div class="welcome-text">
+          <h2>{{ getGreeting() }}, {{ user?.prenom }} {{ user?.nom }}</h2>
+          <p>Bienvenue sur votre espace santé. Gérez vos rendez-vous et votre dossier médical.</p>
+        </div>
+      </div>
+      <div class="welcome-right">
+        <div class="date-badge">
+          <i class="bi bi-calendar3"></i>
+          <span>{{ today | date:'EEEE d MMMM yyyy' | titlecase }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="stats-grid mb-4">
+      <div class="stat-card" (click)="voirRendezVous()">
+        <div class="stat-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ prochainsRdvs.length }}</span>
+          <span class="stat-label">Rendez-vous à venir</span>
+        </div>
+        <i class="bi bi-chevron-right stat-arrow"></i>
+      </div>
+      <div class="stat-card" (click)="voirDossier()">
+        <div class="stat-icon">
+          <i class="bi bi-folder-medical"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ consultationsCount }}</span>
+          <span class="stat-label">Consultations</span>
+        </div>
+        <i class="bi bi-chevron-right stat-arrow"></i>
+      </div>
+      <div class="stat-card" (click)="voirPaiements()">
+        <div class="stat-icon">
+          <i class="bi bi-credit-card"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ facturesEnAttente }}</span>
+          <span class="stat-label">Factures en attente</span>
+        </div>
+        <i class="bi bi-chevron-right stat-arrow"></i>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      
+      <!-- Prochains rendez-vous -->
+      <div class="col-lg-6">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="header-icon">
+              <i class="bi bi-calendar-week"></i>
+            </div>
+            <h3>Prochains rendez-vous</h3>
+            <button class="btn-add" (click)="prendreRdv()">
+              <i class="bi bi-plus-lg"></i> Nouveau RDV
+            </button>
+          </div>
+          <div class="section-body">
+            <div *ngIf="loading" class="loading-state">
+              <div class="spinner"></div>
+              <p>Chargement...</p>
+            </div>
+            
+            <div *ngIf="!loading && prochainsRdvs.length === 0" class="empty-state">
+              <i class="bi bi-calendar-x"></i>
+              <p>Aucun rendez-vous programmé</p>
+              <button class="btn-primary-sm" (click)="prendreRdv()">
+                <i class="bi bi-plus-lg"></i> Prendre un rendez-vous
+              </button>
+            </div>
+
+            <div class="rdv-list" *ngIf="!loading && prochainsRdvs.length > 0">
+              <div *ngFor="let rdv of prochainsRdvs" class="rdv-item">
+                <div class="rdv-date">
+                  <span class="day">{{ rdv.date | date:'dd' }}</span>
+                  <span class="month">{{ rdv.date | date:'MMM' | uppercase }}</span>
+                </div>
+                <div class="rdv-info">
+                  <h6>Dr. {{ rdv.medecinPrenom }} {{ rdv.medecinNom }}</h6>
+                  <p class="specialite">{{ rdv.medecinSpecialite }}</p>
+                  <div class="rdv-meta">
+                    <span><i class="bi bi-clock"></i> {{ rdv.heure }}</span>
+                    <span><i class="bi bi-chat-dots"></i> {{ rdv.motif || 'Consultation' }}</span>
+                  </div>
+                </div>
+                <div class="rdv-status" [class]="rdv.statut === 'CONFIRME' ? 'confirmed' : 'pending'">
+                  {{ rdv.statut === 'CONFIRME' ? 'Confirmé' : 'En attente' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions rapides -->
+      <div class="col-lg-3">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="header-icon">
+              <i class="bi bi-lightning-charge"></i>
+            </div>
+            <h3>Actions rapides</h3>
+          </div>
+          <div class="section-body">
+            <div class="quick-actions">
+              <button class="quick-action" (click)="prendreRdv()">
+                <i class="bi bi-calendar-plus"></i>
+                <span>Prendre RDV</span>
+              </button>
+              <button class="quick-action" (click)="voirRendezVous()">
+                <i class="bi bi-calendar-list"></i>
+                <span>Mes RDV</span>
+              </button>
+              <button class="quick-action" (click)="voirDossier()">
+                <i class="bi bi-folder-medical"></i>
+                <span>Dossier médical</span>
+              </button>
+              <button class="quick-action" (click)="voirPaiements()">
+                <i class="bi bi-receipt"></i>
+                <span>Mes factures</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spécialités -->
+      <div class="col-lg-3">
+        <div class="section-card">
+          <div class="section-header">
+            <div class="header-icon">
+              <i class="bi bi-hospital"></i>
+            </div>
+            <h3>Nos spécialités</h3>
+          </div>
+          <div class="section-body">
+            <div class="specialites-grid">
+              <div *ngFor="let spec of specialites" class="specialite-item">
+                <div class="specialite-icon" [style.background]="spec.color">
+                  <i class="bi {{ spec.icon }}"></i>
+                </div>
+                <span>{{ spec.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

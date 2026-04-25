@@ -1,0 +1,230 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="text-success mb-1">
+        <i class="bi bi-calendar-heart me-2"></i>Mes Rendez-vous
+      </h2>
+      <p class="text-muted mb-0">Gérez vos consultations médicales</p>
+    </div>
+    <a routerLink="/patient/prendre-rdv" class="btn btn-success">
+      <i class="bi bi-plus-lg me-2"></i>Nouveau RDV
+    </a>
+  </div>
+
+  <ng-container *ngIf="loading; else loaded">
+    <div class="text-center py-5">
+      <div class="spinner-border text-success" role="status"></div>
+      <p class="text-muted mt-3">Chargement de vos rendez-vous...</p>
+    </div>
+  </ng-container>
+
+  <ng-template #loaded>
+    <ng-container *ngIf="rendezVous.length === 0; else rdvList">
+      <div class="card border-0 shadow-sm text-center py-5">
+        <div class="card-body">
+          <div class="empty-state-icon mb-3">
+            <i class="bi bi-calendar-x display-1 text-muted opacity-25"></i>
+          </div>
+          <h4 class="text-muted mb-2">Aucun rendez-vous</h4>
+          <p class="text-muted mb-4">Vous n'avez pas encore de rendez-vous programmés.</p>
+          <a routerLink="/patient/prendre-rdv" class="btn btn-success btn-lg">
+            <i class="bi bi-calendar-plus me-2"></i>Prendre un rendez-vous
+          </a>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #rdvList>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4" *ngFor="let rdv of rendezVous">
+          <div class="card h-100 border-0 shadow-sm rdv-card"
+               [style.border-left]="'4px solid ' + getStatusColor(rdv.statut)">
+            <div class="card-body p-4">
+
+              <!-- Mode édition -->
+              <ng-container *ngIf="editingRdv?.id === rdv.id; else displayMode">
+                <div class="mb-3">
+                  <label class="form-label small">Date</label>
+                  <input type="date" class="form-control form-control-sm"
+                         [(ngModel)]="editingRdv!.date"
+                         (change)="updateDate()"
+                         [min]="dateMin">
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small">Créneau</label>
+                  <select class="form-select form-select-sm" [(ngModel)]="editingRdv!.heure">
+                    <option value="">Sélectionnez un créneau</option>
+                    <option *ngFor="let c of creneauxDisponibles" [disabled]="isCreneauOccupe(c)" [value]="c">
+                      {{ c }} <span *ngIf="isCreneauOccupe(c)"> (occupé) </span>
+                    </option>
+                  </select>
+                  <small class="text-danger">{{ errorCreneaux }}</small>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label small">Motif</label>
+                  <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="editingRdv!.motif"></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                  <button class="btn btn-success btn-sm flex-grow-1" (click)="saveEdit()">
+                    <i class="bi bi-check-lg me-1"></i>Enregistrer
+                  </button>
+                  <button class="btn btn-outline-secondary btn-sm" (click)="cancelEdit()">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              </ng-container>
+
+              <ng-template #displayMode>
+                <!-- Affichage normal -->
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <span class="badge rounded-pill mb-2" [ngClass]="getStatusBadgeClass(rdv.statut)">
+                      {{ getStatusLabel(rdv.statut) }}
+                    </span>
+                    <h5 class="mb-1 fw-bold">{{ rdv.date | date:'EEEE d MMMM yyyy' }}</h5>
+                    <p class="text-success fw-bold mb-0"><i class="bi bi-clock me-2"></i>{{ rdv.heure }}</p>
+                  </div>
+                  <div class="rdv-avatar" [style.background-color]="getStatusColor(rdv.statut) + '20'"
+                       [style.color]="getStatusColor(rdv.statut)">
+                    <i class="bi bi-calendar-check"></i>
+                  </div>
+                </div>
+
+                <hr class="my-3">
+
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="avatar-medecin bg-warning bg-opacity-10 text-warning">
+                    {{ rdv.medecinPrenom.charAt(0) }}{{ rdv.medecinNom.charAt(0) }}
+                  </div>
+                  <div>
+                    <p class="mb-0 fw-semibold">Dr. {{ rdv.medecinPrenom }} {{ rdv.medecinNom }}</p>
+                    <small class="text-warning">{{ rdv.medecinSpecialite }}</small>
+                  </div>
+                </div>
+
+                <div class="mb-3 p-2 bg-light rounded">
+                  <small class="text-muted d-block mb-1">Motif</small>
+                  <p class="mb-0 small">{{ rdv.motif || 'Non spécifié' }}</p>
+                </div>
+
+                <div class="d-flex gap-2">
+                  <button *ngIf="canModifyOrCancel(rdv)" class="btn btn-outline-primary btn-sm flex-grow-1" (click)="startEdit(rdv)">
+                    <i class="bi bi-pencil me-2"></i>Modifier
+                  </button>
+                  <button *ngIf="canModifyOrCancel(rdv)" class="btn btn-outline-danger btn-sm flex-grow-1" (click)="openCancelModal(rdv)">
+                    <i class="bi bi-x-circle me-2"></i>Annuler
+                  </button>
+                  <button *ngIf="!canModifyOrCancel(rdv)" class="btn btn-outline-secondary btn-sm flex-grow-1" disabled>
+                    <i class="bi bi-lock me-2"></i>{{ getStatusLabel(rdv.statut) }}
+                  </button>
+                </div>
+              </ng-template>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ng-template>
+</div>
+
+<!-- ==================== MODALES DE CONFIRMATION ==================== -->
+
+<!-- Modal de confirmation d'annulation -->
+<div class="modal fade show d-block" *ngIf="showCancelModal" tabindex="-1" style="background-color: rgba(0,0,0,0.5); backdrop-filter: blur(2px);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header border-0 bg-danger bg-opacity-10">
+        <h5 class="modal-title text-danger">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmer l'annulation
+        </h5>
+        <button type="button" class="btn-close" (click)="closeCancelModal()"></button>
+      </div>
+      <div class="modal-body p-4 text-center">
+        <div class="mb-3">
+          <i class="bi bi-calendar-x display-4 text-danger opacity-75"></i>
+        </div>
+        <h5 class="mb-2">Êtes-vous sûr ?</h5>
+        <p class="text-muted mb-0">
+          Vous êtes sur le point d'annuler votre rendez-vous avec 
+          <strong>Dr. {{ rdvToCancel?.medecinPrenom }} {{ rdvToCancel?.medecinNom }}</strong><br>
+          le <strong>{{ rdvToCancel?.date | date:'EEEE d MMMM yyyy' }}</strong> à 
+          <strong>{{ rdvToCancel?.heure }}</strong>
+        </p>
+        <div class="alert alert-warning mt-3 mb-0 py-2">
+          <small><i class="bi bi-info-circle me-1"></i>Cette action est irréversible</small>
+        </div>
+      </div>
+      <div class="modal-footer border-0 justify-content-center gap-2 pb-4">
+        <button type="button" class="btn btn-outline-secondary px-4" (click)="closeCancelModal()">
+          <i class="bi bi-x-lg me-2"></i>Non, garder
+        </button>
+        <button type="button" class="btn btn-danger px-4" (click)="confirmCancel()">
+          <i class="bi bi-check-lg me-2"></i>Oui, annuler
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TOASTS DE NOTIFICATION ==================== -->
+
+<!-- Toast de succès pour modification -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+  <div class="toast align-items-center text-white bg-success border-0 shadow-lg" 
+       *ngIf="showEditSuccess" 
+       role="alert" 
+       style="min-width: 350px;">
+    <div class="d-flex">
+      <div class="toast-body py-3">
+        <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+        <div class="d-inline-block">
+          <strong>Succès !</strong><br>
+          <small>Rendez-vous modifié avec succès.</small>
+        </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white me-3 m-auto" (click)="showEditSuccess = false"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast de succès général -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+  <div class="toast align-items-center text-white bg-success border-0 shadow-lg" 
+       *ngIf="showSuccessModal" 
+       role="alert" 
+       style="min-width: 350px;">
+    <div class="d-flex">
+      <div class="toast-body py-3">
+        <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+        <div class="d-inline-block">
+          <strong>Succès !</strong><br>
+          <small>{{ successMessage }}</small>
+        </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white me-3 m-auto" (click)="showSuccessModal = false"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast d'erreur -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+  <div class="toast align-items-center text-white bg-danger border-0 shadow-lg" 
+       *ngIf="showErrorModal" 
+       role="alert" 
+       style="min-width: 350px;">
+    <div class="d-flex">
+      <div class="toast-body py-3">
+        <i class="bi bi-x-circle-fill me-2 fs-5"></i>
+        <div class="d-inline-block">
+          <strong>Erreur</strong><br>
+          <small>{{ errorModalMessage }}</small>
+        </div>
+      </div>
+      <button type="button" class="btn-close btn-close-white me-3 m-auto" (click)="closeErrorModal()"></button>
+    </div>
+  </div>
+</div>

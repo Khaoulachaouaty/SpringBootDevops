@@ -1,0 +1,1026 @@
+/* ============================================
+   CALENDRIER MÉDECIN - VERSION COMPLÈTE
+   ============================================ */
+
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #60a5fa;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --shadow-floating: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+/* ==================== CARTE CALENDRIER ==================== */
+
+.calendar-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.calendar-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.calendar-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: white;
+  border-bottom: 1px solid var(--gray-100);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.title-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.header-title h5 {
+  font-weight: 700;
+  font-size: 1rem;
+  margin: 0;
+  color: var(--gray-800);
+}
+
+.header-title p {
+  font-size: 0.7rem;
+  margin: 0;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-nav {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid var(--gray-200);
+  background: white;
+  color: var(--primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-nav:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.month-display {
+  text-align: center;
+  min-width: 110px;
+}
+
+.month-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  display: block;
+  line-height: 1.2;
+}
+
+.year-name {
+  font-size: 0.65rem;
+  color: var(--gray-500);
+}
+
+/* ==================== LÉGENDE ==================== */
+
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--gray-600);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend-dot.has-rdv { background: linear-gradient(135deg, #dbeafe, var(--primary-light)); }
+.legend-dot.today { background: linear-gradient(135deg, #d1fae5, var(--success)); }
+.legend-dot.selected { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+.legend-dot.multiple { background: linear-gradient(135deg, #fee2e2, var(--danger)); }
+
+/* ==================== GRILLE CALENDRIER ==================== */
+
+.weekdays-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.weekday {
+  text-align: center;
+  padding: 0.5rem;
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: var(--gray-500);
+}
+
+.weekday span {
+  background: var(--gray-50);
+  padding: 0.35rem 0;
+  display: block;
+  border-radius: 10px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+}
+
+.calendar-day-cell {
+  aspect-ratio: 1;
+  background: white;
+  border: 1.5px solid var(--gray-100);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.calendar-day-cell:hover:not(.other-month) {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.day-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  padding: 0.25rem;
+}
+
+.day-number {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+/* Styles des jours */
+.calendar-day-cell.has-rdv {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-color: #bfdbfe;
+}
+
+.calendar-day-cell.has-multiple-rdv {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border-color: #fecaca;
+}
+
+.calendar-day-cell.today {
+  border-color: var(--success);
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+.calendar-day-cell.today .day-number {
+  color: var(--success);
+  font-weight: 700;
+}
+
+.calendar-day-cell.selected {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-color: var(--primary-dark);
+}
+
+.calendar-day-cell.selected .day-number {
+  color: white;
+}
+
+.calendar-day-cell.selected .rdv-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.calendar-day-cell.other-month {
+  background: var(--gray-50);
+  border-color: var(--gray-100);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.calendar-day-cell.other-month:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Badge RDV */
+.rdv-indicator-wrapper {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.rdv-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  background: var(--primary);
+  color: white;
+  font-size: 0.55rem;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 0 4px;
+}
+
+.rdv-badge.multiple {
+  background: var(--danger);
+}
+
+/* Barre d'intensité */
+.rdv-intensity {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: var(--gray-100);
+}
+
+.intensity-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  transition: width 0.2s ease;
+}
+
+.has-multiple-rdv .intensity-bar {
+  background: linear-gradient(90deg, var(--danger), #dc2626);
+}
+
+/* ==================== CARTE LISTE RDV ==================== */
+
+.rdv-list-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.rdv-list-header {
+  background: linear-gradient(135deg, var(--gray-800) 0%, var(--gray-700) 100%);
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.header-date-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.date-badge {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 0.35rem 0.6rem;
+  text-align: center;
+  min-width: 55px;
+}
+
+.date-badge .date-day {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: white;
+  display: block;
+  line-height: 1;
+}
+
+.date-badge .date-month {
+  font-size: 0.6rem;
+  color: var(--gray-300);
+}
+
+.date-text h6 {
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.date-text p {
+  font-size: 0.65rem;
+  margin: 0;
+}
+
+.header-stats {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 0.35rem 0.75rem;
+  text-align: center;
+}
+
+.stats-count {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: white;
+  display: block;
+  line-height: 1;
+}
+
+.stats-label {
+  font-size: 0.6rem;
+  color: var(--gray-300);
+}
+
+/* Liste des RDV */
+.rdv-list-body {
+  flex: 1;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.state-overlay {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.empty-icon {
+  width: 55px;
+  height: 55px;
+  background: var(--gray-100);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.empty-icon i {
+  font-size: 1.6rem;
+  color: var(--gray-400);
+}
+
+.rdv-items-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.rdv-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--gray-100);
+  transition: all 0.2s ease;
+}
+
+.rdv-item:hover {
+  background: var(--gray-50);
+}
+
+.rdv-time {
+  min-width: 55px;
+}
+
+.time-hour {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  background: var(--gray-100);
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.rdv-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.rdv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.patient-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0;
+}
+
+.status-badge {
+  font-size: 0.6rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.status-badge.status-confirme {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.status-badge.status-en-attente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.status-termine {
+  background: var(--gray-200);
+  color: var(--gray-600);
+}
+
+.status-badge.status-annule {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge.status-non-venu {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.rdv-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  color: var(--gray-500);
+}
+
+.detail-item i {
+  font-size: 0.65rem;
+  width: 14px;
+}
+
+.motif-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rdv-actions {
+  min-width: 28px;
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: var(--gray-100);
+  color: var(--primary);
+}
+
+/* Footer */
+.rdv-list-footer {
+  padding: 0.75rem 1rem;
+  background: var(--gray-50);
+  border-top: 1px solid var(--gray-100);
+}
+
+.footer-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 0.75rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.stat-item i {
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  display: block;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  color: var(--gray-500);
+}
+
+/* Scrollbar */
+.rdv-list-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.rdv-list-body::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+.rdv-list-body::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 4px;
+}
+
+/* ==================== MODALS AMÉLIORÉS ==================== */
+
+.elegant-modal {
+  background: white;
+  border: none;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--shadow-floating);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header-custom {
+  position: relative;
+  padding: 2rem 2rem 1rem;
+  text-align: center;
+}
+
+.modal-header-custom.danger {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.modal-header-custom.warning {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.modal-header-custom.success {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+}
+
+.modal-icon-animated {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 2.5rem;
+  animation: iconPulse 0.5s ease-out;
+}
+
+@keyframes iconPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-header-custom.danger .modal-icon-animated {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
+}
+
+.modal-header-custom.warning .modal-icon-animated {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  color: white;
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+}
+
+.btn-close-custom {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--gray-600);
+}
+
+.btn-close-custom:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: rotate(90deg);
+}
+
+.modal-content-custom {
+  padding: 1.5rem 2rem 2rem;
+}
+
+.modal-title-custom {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.modal-text-custom {
+  color: var(--gray-500);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Aperçu du RDV */
+.rdv-info-preview {
+  background: var(--gray-50);
+  border-radius: 20px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--gray-200);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.preview-header i {
+  color: var(--primary);
+}
+
+.preview-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0;
+}
+
+.preview-item:not(:last-child) {
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.preview-icon {
+  width: 36px;
+  height: 36px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.preview-info {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-label {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+.preview-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+/* Alert info */
+.alert-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #eff6ff;
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+  font-size: 0.75rem;
+  color: #1e40af;
+}
+
+.alert-info i {
+  font-size: 1rem;
+  color: #3b82f6;
+}
+
+/* Boutons */
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn-secondary {
+  flex: 1;
+  background: var(--gray-100);
+  border: none;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  background: var(--gray-200);
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  flex: 1;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  border: none;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+}
+
+.btn-warning {
+  flex: 1;
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  border: none;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-warning:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+}
+
+.btn-danger:active, .btn-warning:active, .btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* ==================== TOAST AMÉLIORÉ ==================== */
+
+.elegant-toast {
+  background: white;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.elegant-toast .toast-header {
+  background: white;
+  border-bottom: 1px solid var(--gray-100);
+  padding: 0.75rem 1rem;
+}
+
+.toast-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  animation: iconCheck 0.4s ease-out;
+}
+
+@keyframes iconCheck {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.toast-icon.success {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #059669;
+}
+
+.toast-icon.error {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #dc2626;
+}
+
+.toast-icon.warning {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #d97706;
+}
+
+.elegant-toast .toast-body {
+  padding: 0.75rem 1rem;
+  color: var(--gray-700);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+  .calendar-card-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .header-title {
+    justify-content: center;
+  }
+  
+  .calendar-grid {
+    gap: 0.25rem;
+  }
+  
+  .calendar-day-cell {
+    border-radius: 8px;
+  }
+  
+  .day-number {
+    font-size: 0.75rem;
+  }
+  
+  .rdv-badge {
+    min-width: 14px;
+    height: 14px;
+    font-size: 0.5rem;
+  }
+  
+  .rdv-item {
+    flex-wrap: wrap;
+  }
+  
+  .rdv-time {
+    width: 100%;
+  }
+  
+  .footer-stats {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .modal-content-custom {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+  
+  .modal-title-custom {
+    font-size: 1.25rem;
+  }
+  
+  .modal-buttons {
+    flex-direction: column;
+  }
+  
+  .preview-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .preview-info {
+    width: 100%;
+  }
+  
+  .modal-icon-animated {
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+  }
+}

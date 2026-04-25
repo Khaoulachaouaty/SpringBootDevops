@@ -1,0 +1,676 @@
+/* ============================================
+   FACTURE PATIENT - DESIGN VERT (VALEURS DIRECTES)
+   ============================================ */
+
+/* Container */
+.facture-patient-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+  padding: 1rem 0;
+}
+
+/* Header */
+.facture-header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.header-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.back-button-container .btn-back {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 10px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.back-button-container .btn-back:hover {
+  background: #e5e7eb;
+  transform: translateX(-2px);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.header-title h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.header-title p {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-action {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-download {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.btn-download:hover {
+  background: #10b981;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-print {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.btn-print:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+/* Loading */
+.loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  background: white;
+  border-radius: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.spinner-modern {
+  width: 45px;
+  height: 45px;
+}
+
+.spinner-ring {
+  width: 100%;
+  height: 100%;
+  border: 3px solid #e5e7eb;
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Facture Content */
+.facture-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Facture Card */
+.facture-card {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Clinic Header */
+.clinic-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.clinic-logo {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.8rem;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+}
+
+.clinic-info h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #059669;
+  margin: 0;
+}
+
+.clinic-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Facture Title */
+.facture-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.facture-title h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1f2937;
+  letter-spacing: 2px;
+  margin: 0;
+  position: relative;
+  display: inline-block;
+}
+
+.facture-title h1::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 25%;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #10b981, transparent);
+}
+
+.facture-number {
+  margin-top: 0.75rem;
+}
+
+.facture-number span {
+  background: #d1fae5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: #059669;
+  font-weight: 600;
+}
+
+/* Info Section */
+.info-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  background: #ecfdf5;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+.info-label i {
+  font-size: 0.7rem;
+  color: #10b981;
+}
+
+.info-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Médecin Info */
+.medecin-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #d1fae5;
+  border-radius: 16px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #10b981;
+}
+
+.medecin-avatar {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.medecin-details h5 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+}
+
+.medecin-details .specialite {
+  font-size: 0.7rem;
+  color: #059669;
+  margin: 0;
+}
+
+/* Consultation Details */
+.consultation-details {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.detail-row:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.detail-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* Amounts Table */
+.amounts-table {
+  background: #f9fafb;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.table-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d1d5db, transparent);
+  margin: 0.5rem 0;
+}
+
+.table-row.total {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #1f2937;
+  border-top: 2px solid #e5e7eb;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.total-amount {
+  color: #10b981;
+  font-size: 1.2rem;
+}
+
+/* Payment Status */
+.payment-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 40px;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.payment-status.paid {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.payment-status.pending {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.payment-status i {
+  font-size: 1rem;
+}
+
+/* Notes Section */
+.notes-section {
+  background: #ecfdf5;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid #10b981;
+}
+
+.notes-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #059669;
+}
+
+.notes-section p {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Footer */
+.facture-footer {
+  text-align: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.facture-footer p {
+  margin: 0;
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+/* Actions */
+.facture-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0;
+}
+
+.btn-primary {
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+}
+
+.btn-secondary {
+  padding: 0.7rem 1.5rem;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 12px;
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  padding: 0.7rem 1.5rem;
+  background: transparent;
+  border: 1.5px solid #d1d5db;
+  border-radius: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-outline:hover {
+  border-color: #10b981;
+  color: #10b981;
+  transform: translateY(-2px);
+}
+
+/* Error State */
+.error-state {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 20px;
+  max-width: 500px;
+  margin: 2rem auto;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.error-state i {
+  font-size: 3rem;
+  color: #f59e0b;
+  margin-bottom: 1rem;
+}
+
+.error-state h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.error-state p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+/* Print Styles */
+@media print {
+  .facture-header,
+  .facture-actions,
+  .btn-action,
+  .btn-primary,
+  .btn-secondary,
+  .btn-outline,
+  .back-button-container {
+    display: none !important;
+  }
+  
+  .facture-card {
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .facture-patient-container {
+    background: white;
+    padding: 0;
+  }
+  
+  .facture-content {
+    padding: 0;
+  }
+  
+  .payment-status {
+    break-inside: avoid;
+  }
+  
+  .clinic-logo {
+    box-shadow: none;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .facture-card {
+    padding: 1.25rem;
+  }
+  
+  .info-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .clinic-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .header-title {
+    flex-direction: column;
+  }
+  
+  .facture-actions {
+    flex-direction: column;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-outline {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .payment-status {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .facture-content {
+    padding: 0 1rem;
+  }
+  
+  .facture-card {
+    padding: 1rem;
+  }
+  
+  .clinic-logo {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  
+  .clinic-info h3 {
+    font-size: 1.2rem;
+  }
+  
+  .facture-title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .info-box {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .medecin-info {
+    flex-direction: column;
+    text-align: center;
+  }
+}

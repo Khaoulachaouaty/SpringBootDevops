@@ -1,0 +1,149 @@
+<div class="facture-container">
+  <!-- Header -->
+  <div class="facture-header">
+    <div class="header-content">
+      <div class="back-button-container">
+        <button class="btn btn-outline-secondary btn-sm" title="Retour">
+          <i class="bi bi-arrow-left"></i> Retour
+        </button>
+      </div>
+      <div class="header-title">
+        <h2>Facture</h2>
+        <span class="facture-number">FC-2024-001</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm">
+          <i class="bi bi-download"></i> Télécharger
+        </button>
+        <button class="btn btn-info btn-sm">
+          <i class="bi bi-printer"></i> Imprimer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="facture-content">
+    <!-- Facture Preview -->
+    <div class="facture-preview">
+      <!-- Clinic Header -->
+      <div class="facture-clinic-header">
+        <h3>MediClinic</h3>
+        <p>Adresse: 123, Rue de la Santé, 75000 Paris</p>
+        <p>Téléphone: +33 1 23 45 67 89</p>
+      </div>
+
+      <!-- Document Title -->
+      <div class="facture-title">
+        <h2>FACTURE</h2>
+      </div>
+
+      <!-- Facture Info -->
+      <div class="facture-info">
+        <div class="info-item">
+          <label>Numéro de Facture</label>
+          <p>FC-2024-001</p>
+        </div>
+        <div class="info-item">
+          <label>Date</label>
+          <p>15 Janvier 2024</p>
+        </div>
+        <div class="info-item">
+          <label>Statut</label>
+          <span class="badge badge-success">
+            <i class="bi bi-check-circle me-1"></i>Payée
+          </span>
+        </div>
+      </div>
+
+      <!-- Parties -->
+      <div class="facture-parties">
+        <div class="party-box">
+          <h6>DE:</h6>
+          <p><strong>MediClinic</strong></p>
+          <p>Clinique Médicale</p>
+          <p>123, Rue de la Santé</p>
+          <p>75000 Paris France</p>
+        </div>
+        <div class="party-box">
+          <h6>À:</h6>
+          <p><strong>Patient Name</strong></p>
+          <p>Adresse du patient</p>
+          <p>Code Postal et Ville</p>
+          <p>Email: patient@example.com</p>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <div class="facture-items">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Médecin</th>
+              <th>Quantité</th>
+              <th>Prix Unitaire</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Consultation Générale</td>
+              <td>Dr. Médecin</td>
+              <td>1</td>
+              <td>80,00 €</td>
+              <td class="fw-bold">80,00 €</td>
+            </tr>
+            <tr>
+              <td>Analyses Obligatoires</td>
+              <td>Laboratoire</td>
+              <td>1</td>
+              <td>50,00 €</td>
+              <td class="fw-bold">50,00 €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Totals -->
+      <div class="facture-totals">
+        <div class="total-row">
+          <span>Sous-total:</span>
+          <span>130,00 €</span>
+        </div>
+        <div class="total-row">
+          <span>TVA (20%):</span>
+          <span>26,00 €</span>
+        </div>
+        <div class="total-row grand-total">
+          <span>TOTAL:</span>
+          <span>156,00 €</span>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="facture-notes">
+        <h6>Notes:</h6>
+        <p>Merci pour votre confiance. Pour tout problème relatif à cette facture, veuillez nous contacter.</p>
+      </div>
+
+      <!-- Footer -->
+      <div class="facture-footer">
+        <p>Ceci est une facture officielle. Veuillez la conserver à titre de preuve de paiement.</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="facture-actions">
+      <button class="btn btn-success">
+        <i class="bi bi-download me-2"></i>Télécharger en PDF
+      </button>
+      <button class="btn btn-info">
+        <i class="bi bi-printer me-2"></i>Imprimer
+      </button>
+      <button class="btn btn-outline-secondary">
+        <i class="bi bi-x me-2"></i>Fermer
+      </button>
+    </div>
+  </div>
+</div>

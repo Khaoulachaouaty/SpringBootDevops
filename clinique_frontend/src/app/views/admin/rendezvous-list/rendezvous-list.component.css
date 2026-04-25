@@ -1,0 +1,128 @@
+.admin-page {
+  background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%);
+  min-height: 100vh;
+}
+
+/* Calendar icon */
+.calendar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-icon-lg {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+}
+
+/* Avatar small */
+.avatar-sm {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+/* Table row hover */
+.rdv-row {
+  transition: background-color 0.2s;
+}
+
+.rdv-row:hover {
+  background-color: #f0fdf4;
+}
+
+/* Boutons icônes */
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-icon svg {
+  display: block;
+}
+
+/* Détails - Bleu */
+.btn-details {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.btn-details:hover {
+  background: #0284c7;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+/* Supprimer - Rouge */
+.btn-delete {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-delete:hover {
+  background: #dc2626;
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Stat cards */
+.stat-card {
+  transition: transform 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Empty state */
+.empty-state {
+  padding: 2rem;
+}
+
+/* Modal */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+  z-index: 1040;
+}
+
+.modal {
+  z-index: 1050;
+}
+
+.delete-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background: #fee2e2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .calendar-icon-lg {
+    width: 60px;
+    height: 60px;
+  }
+}

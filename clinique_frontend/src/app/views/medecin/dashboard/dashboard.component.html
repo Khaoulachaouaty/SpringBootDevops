@@ -1,0 +1,154 @@
+<div class="dashboard-wrapper">
+  <div class="container-fluid">
+    <!-- Header Section -->
+    <div class="dashboard-header">
+      <div class="header-top">
+        <h1 class="page-title">Tableau de Bord Médecin</h1>
+        <p class="page-subtitle">Bienvenue {{ authService.currentUser()?.prenom }}</p>
+      </div>
+      <div class="header-meta">
+        <span class="today-date">{{ today | date:'EEEE d MMMM yyyy' }}</span>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card stat-card-primary" (click)="navigateTo('/medecin/rendezvous')">
+        <div class="stat-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">{{ stats.rdvToday }}</h3>
+          <p class="stat-label">RDV Aujourd'hui</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-warning" (click)="navigateTo('/medecin/rendezvous')">
+        <div class="stat-icon">
+          <i class="bi bi-hourglass-split"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">{{ stats.rdvPending }}</h3>
+          <p class="stat-label">En Attente</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-success" (click)="navigateTo('/medecin/patients')">
+        <div class="stat-icon">
+          <i class="bi bi-people"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">{{ stats.totalPatients }}</h3>
+          <p class="stat-label">Mes Patients</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-info" (click)="navigateTo('/medecin/calendar')">
+        <div class="stat-icon">
+          <i class="bi bi-clipboard-pulse"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">{{ stats.totalConsultations }}</h3>
+          <p class="stat-label">Consultations</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-grid">
+      <!-- Today's Appointments -->
+      <div class="content-card main-card">
+        <div class="card-header-modern">
+          <div class="header-icon">
+            <i class="bi bi-calendar-day"></i>
+          </div>
+          <div class="header-text">
+            <h2 class="card-title">Rendez-vous du Jour</h2>
+            <p class="card-subtitle">Votre agenda d'aujourd'hui</p>
+          </div>
+          <button class="btn-icon-modern" (click)="navigateTo('/medecin/rendezvous')">
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+
+        <div class="card-body-modern">
+          <div *ngIf="loading" class="loading-state">
+            <div class="spinner-modern"></div>
+          </div>
+
+          <div *ngIf="!loading && todayRendezVous.length === 0" class="empty-state">
+            <i class="bi bi-calendar-x"></i>
+            <p>Aucun rendez-vous aujourd'hui</p>
+          </div>
+
+          <div *ngIf="!loading && todayRendezVous.length > 0" class="appointments-list">
+            <div *ngFor="let rdv of todayRendezVous" class="appointment-item">
+              <div class="appointment-time">{{ rdv.heure }}</div>
+              <div class="appointment-avatar">{{ rdv.patientPrenom.charAt(0) }}{{ rdv.patientNom.charAt(0) }}</div>
+              <div class="appointment-details">
+                <h4>{{ rdv.patientPrenom }} {{ rdv.patientNom }}</h4>
+                <p class="appointment-motif">{{ rdv.motif }}</p>
+              </div>
+              <span class="appointment-status" [class]="'status-' + rdv.statut.toLowerCase()">
+                {{ rdv.statut }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="content-card">
+        <div class="card-header-modern">
+          <div class="header-icon">
+            <i class="bi bi-graph-up"></i>
+          </div>
+          <div class="header-text">
+            <h2 class="card-title">Statistiques</h2>
+            <p class="card-subtitle">Vue d'ensemble</p>
+          </div>
+        </div>
+
+        <div class="card-body-modern">
+          <div class="stats-list">
+            <div class="stats-item">
+              <div class="stats-label">Total Patients</div>
+              <div class="stats-value">{{ stats.totalPatients }}</div>
+            </div>
+            <div class="stats-item">
+              <div class="stats-label">Consultations</div>
+              <div class="stats-value">{{ stats.totalConsultations }}</div>
+            </div>
+            <div class="stats-item">
+              <div class="stats-label">En Attente</div>
+              <div class="stats-value">{{ stats.rdvPending }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-section">
+      <h3 class="section-title">Actions Rapides</h3>
+      <div class="actions-grid">
+        <button class="action-btn" (click)="navigateTo('/medecin/rendezvous')">
+          <i class="bi bi-calendar-event"></i>
+          <span>Mes RDV</span>
+        </button>
+        <button class="action-btn" (click)="navigateTo('/medecin/patients')">
+          <i class="bi bi-people-fill"></i>
+          <span>Mes Patients</span>
+        </button>
+        <button class="action-btn" (click)="navigateTo('/medecin/dossiers')">
+          <i class="bi bi-folder-fill"></i>
+          <span>Dossiers</span>
+        </button>
+        <button class="action-btn" (click)="navigateTo('/medecin/calendrier')">
+          <i class="bi bi-calendar-range"></i>
+          <span>Calendrier</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

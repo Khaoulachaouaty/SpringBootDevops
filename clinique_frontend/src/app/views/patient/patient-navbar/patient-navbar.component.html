@@ -1,0 +1,67 @@
+<nav class="patient-navbar navbar navbar-expand-lg sticky-top">
+  <div class="container-fluid px-4">  <!-- ✅ Container fluid avec padding -->
+    
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center gap-2" 
+       href="javascript:void(0)"
+       (click)="navigateTo('/patient/dashboard')">
+
+      <div class="nav-icon text-white d-flex align-items-center justify-content-center">
+        <i class="bi bi-heart-pulse-fill fs-4"></i>
+      </div>
+
+      <div class="brand-text">
+        <span class="brand-name">MediClinic</span>
+        <span class="brand-role">Espace Patient</span>
+      </div>
+    </a>
+
+
+    <!-- Menu -->
+    <div class="collapse navbar-collapse" [class.show]="isMenuOpen">
+      <ul class="navbar-nav mx-auto align-items-center gap-1">
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/patient/dashboard')">
+            <span>Mon Espace Santé</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/patient/rendezvous')">
+            <span>Mes Rendez-vous</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/patient/prendre-rdv')">
+            <span>Nouveau RDV</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/patient/dossier')">
+            <span>Dossier Médical</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/patient/medecins')">
+            <span>Nos Médecins</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/patient/paiements')">
+            <span>Mes Paiements</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Actions -->
+      <div class="d-flex align-items-center gap-3">
+        <!-- Notifications -->
+        <app-notification-patient></app-notification-patient>
+
+        <!-- Déconnexion -->
+        <button type="button" class="btn-logout" (click)="logout()" title="Déconnexion">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

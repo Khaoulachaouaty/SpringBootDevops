@@ -1,0 +1,604 @@
+<div class="container-fluid py-4 px-3 px-md-4">
+  <div class="row g-3 g-md-4">
+    <!-- Calendrier -->
+    <div class="col-lg-8">
+      <div class="calendar-card">
+        <div class="calendar-card-header">
+          <div class="header-title">
+            <div class="title-icon">
+              <i class="bi bi-calendar3"></i>
+            </div>
+            <div>
+              <h5 class="mb-0">Calendrier des Rendez-vous</h5>
+              <p class="mb-0 text-muted small">Gérez vos consultations</p>
+            </div>
+          </div>
+          <div class="header-nav">
+            <button class="btn-nav" (click)="previousMonth()">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <div class="month-display">
+              <span class="month-name">{{ currentMonth | date:'MMMM' | titlecase }}</span>
+              <span class="year-name">{{ currentMonth | date:'yyyy' }}</span>
+            </div>
+            <button class="btn-nav" (click)="nextMonth()">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="calendar-body p-3 p-md-4">
+          <div class="calendar-legend">
+            <div class="legend-item">
+              <div class="legend-dot has-rdv"></div>
+              <span>Avec RDV</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot today"></div>
+              <span>Aujourd'hui</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot selected"></div>
+              <span>Sélectionné</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot multiple"></div>
+              <span>3+ RDV</span>
+            </div>
+          </div>
+
+          <div class="weekdays-grid">
+            <div class="weekday" *ngFor="let day of weekDays">
+              <span>{{ day }}</span>
+            </div>
+          </div>
+          
+          <div class="calendar-grid">
+            <div 
+              *ngFor="let date of calendarDays" 
+              class="calendar-day-cell"
+              [class.today]="isToday(date)"
+              [class.selected]="isSelected(date)"
+              [class.other-month]="!isCurrentMonth(date)"
+              [class.has-rdv]="getRdvCount(date) > 0"
+              [class.has-multiple-rdv]="getRdvCount(date) >= 3"
+              (click)="selectDate(date)">
+              
+              <div class="day-content">
+                <span class="day-number">{{ date.getDate() }}</span>
+                <div class="rdv-indicator-wrapper" *ngIf="getRdvCount(date) > 0">
+                  <span class="rdv-badge" [class.multiple]="getRdvCount(date) >= 3">
+                    {{ getRdvCount(date) }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="rdv-intensity" *ngIf="getRdvCount(date) > 0">
+                <div class="intensity-bar" [style.width.%]="getRdvCount(date) * 25"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste des RDV -->
+    <div class="col-lg-4">
+      <div class="rdv-list-card">
+        <div class="rdv-list-header">
+          <div class="header-date-info">
+            <div class="date-badge">
+              <span class="date-day">{{ selectedDate | date:'dd' }}</span>
+              <span class="date-month">{{ selectedDate | date:'MMM' | uppercase }}</span>
+            </div>
+            <div class="date-text">
+              <h6 class="mb-0">{{ selectedDate | date:'EEEE' | titlecase }}</h6>
+              <p class="mb-0 text-muted small">{{ selectedDate | date:'MMMM yyyy' | titlecase }}</p>
+            </div>
+          </div>
+          <div class="header-stats" *ngIf="!loading && rendezVous.length > 0">
+            <span class="stats-count">{{ rendezVous.length }}</span>
+            <span class="stats-label">RDV</span>
+          </div>
+        </div>
+        
+        <div class="rdv-list-body">
+          <div *ngIf="loading" class="state-overlay">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-3 mb-0">Chargement...</p>
+          </div>
+          
+          <div *ngIf="!loading && rendezVous.length === 0" class="state-overlay">
+            <div class="empty-icon">
+              <i class="bi bi-calendar-x"></i>
+            </div>
+            <h6 class="mt-3 mb-1">Aucun rendez-vous</h6>
+            <p class="text-muted small mb-0">Aucune consultation prévue</p>
+          </div>
+          
+          <div class="rdv-items-list" *ngIf="!loading && rendezVous.length > 0">
+            <div 
+              *ngFor="let rdv of rendezVous; let i = index" 
+              class="rdv-item"
+              [class]="getStatusClass(rdv.statut)">
+              
+              <div class="rdv-time">
+                <span class="time-hour">{{ rdv.heure }}</span>
+              </div>
+              
+              <div class="rdv-content">
+                <div class="rdv-header">
+                  <h6 class="patient-name">{{ rdv.patientPrenom }} {{ rdv.patientNom }}</h6>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="status-badge" [class]="getStatusClass(rdv.statut)">
+                      {{ getStatusLabel(rdv.statut) }}
+                    </span>
+                    <span class="rdv-info-badge upcoming" 
+                          *ngIf="rdv.statut === 'CONFIRME' && isRdvFuture(rdv)">
+                      <i class="bi bi-clock-history me-1"></i>À venir
+                    </span>
+                    <span class="rdv-info-badge past" 
+                          *ngIf="rdv.statut === 'CONFIRME' && isRdvPassed(rdv)">
+                      <i class="bi bi-check-all me-1"></i>À valider
+                    </span>
+                    <span class="rdv-info-badge no-show" 
+                          *ngIf="rdv.statut === 'NON_VENU'">
+                      <i class="bi bi-person-x me-1"></i>Absent
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="rdv-details">
+                  <div class="detail-item" *ngIf="rdv.patientTel">
+                    <i class="bi bi-telephone-fill"></i>
+                    <span>{{ rdv.patientTel }}</span>
+                  </div>
+                  <div class="detail-item">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span class="motif-text">{{ rdv.motif || 'Consultation générale' }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="rdv-actions" *ngIf="showActions(rdv)">
+                <div class="dropdown">
+                  <button class="action-btn" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li *ngIf="rdv.statut === 'EN_ATTENTE' && canConfirmRdv(rdv)">
+                      <a class="dropdown-item" (click)="confirmRdv(rdv)">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        Confirmer
+                      </a>
+                    </li>
+                    
+                    <li *ngIf="rdv.statut === 'CONFIRME' && canCompleteRdv(rdv)">
+                      <a class="dropdown-item" (click)="completeRdv(rdv)">
+                        <i class="bi bi-clipboard-check-fill text-primary me-2"></i>
+                        Terminer
+                      </a>
+                    </li>
+                    
+                    <li *ngIf="rdv.statut === 'CONFIRME' && canMarkAsNoShow(rdv)">
+                      <a class="dropdown-item text-warning" (click)="openNoShowModal(rdv)">
+                        <i class="bi bi-person-x-fill me-2"></i>
+                        Patient non venu
+                      </a>
+                    </li>
+                    
+                    <li *ngIf="rdv.statut === 'CONFIRME' && !canCompleteRdv(rdv) && !canMarkAsNoShow(rdv) && isRdvFuture(rdv)">
+                      <div class="dropdown-item disabled text-muted">
+                        <i class="bi bi-hourglass-split me-2"></i>
+                        {{ getRdvStatusMessage(rdv) }}
+                      </div>
+                    </li>
+                    
+                    <li><hr class="dropdown-divider"></li>
+                    
+                    <li *ngIf="canCancelRdv(rdv)">
+                      <a class="dropdown-item text-danger" (click)="openCancelModal(rdv)">
+                        <i class="bi bi-x-circle-fill me-2"></i>
+                        Annuler
+                      </a>
+                    </li>
+                    
+                    <li *ngIf="!canCancelRdv(rdv) && (rdv.statut === 'EN_ATTENTE' || rdv.statut === 'CONFIRME')">
+                      <div class="dropdown-item disabled text-muted">
+                        <i class="bi bi-calendar-x me-2"></i>
+                        Annulation non disponible
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="rdv-list-footer" *ngIf="!loading && rendezVous.length > 0">
+          <div class="footer-stats">
+            <div class="stat-item">
+              <i class="bi bi-calendar-check"></i>
+              <div>
+                <span class="stat-value">{{ rendezVous.length }}</span>
+                <span class="stat-label">Total</span>
+              </div>
+            </div>
+            <div class="stat-item" *ngIf="getConfirmedCount() > 0">
+              <i class="bi bi-check-circle-fill text-success"></i>
+              <div>
+                <span class="stat-value">{{ getConfirmedCount() }}</span>
+                <span class="stat-label">Confirmés</span>
+              </div>
+            </div>
+            <div class="stat-item" *ngIf="getPendingCount() > 0">
+              <i class="bi bi-clock-fill text-warning"></i>
+              <div>
+                <span class="stat-value">{{ getPendingCount() }}</span>
+                <span class="stat-label">Attente</span>
+              </div>
+            </div>
+            <div class="stat-item" *ngIf="getNoShowCount() > 0">
+              <i class="bi bi-person-x-fill text-warning"></i>
+              <div>
+                <span class="stat-value">{{ getNoShowCount() }}</span>
+                <span class="stat-label">Absents</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Formulaire Consultation et Facture -->
+<div class="modal-overlay" *ngIf="showConsultationForm" (click)="closeConsultationForm()">
+  <div class="modal-form-large" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-form-header">
+      <div class="header-content">
+        <div class="header-icon primary">
+          <i class="bi bi-file-medical"></i>
+        </div>
+        <div>
+          <h3 class="mb-0 fw-bold">Terminer la consultation</h3>
+          <p class="text-muted small mb-0">Complétez les informations de la consultation et de la facturation</p>
+        </div>
+      </div>
+      <button class="modal-close" (click)="closeConsultationForm()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-form-body">
+      <!-- Patient Info Card -->
+      <div class="patient-info-card mb-4">
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <div class="patient-avatar-large">
+              {{ getInitials(selectedRdv?.patientPrenom || '', selectedRdv?.patientNom || '') }}
+            </div>
+          </div>
+          <div class="col">
+            <h5 class="mb-1">{{ selectedRdv?.patientPrenom }} {{ selectedRdv?.patientNom }}</h5>
+            <div class="patient-details">
+              <span class="badge bg-info me-2">
+                <i class="bi bi-telephone"></i> {{ selectedRdv?.patientTel }}
+              </span>
+              <span class="badge bg-secondary">
+                <i class="bi bi-calendar2"></i> {{ selectedRdv?.date | date:'dd/MM/yyyy' }} à {{ selectedRdv?.heure }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <div class="form-content">
+        <!-- Section 1: Informations Médicales -->
+        <div class="form-section">
+          <div class="section-header">
+            <i class="bi bi-clipboard-pulse"></i>
+            <h5>Informations Médicales</h5>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label fw-semibold">
+              Diagnostic <span class="text-danger">*</span>
+            </label>
+            <textarea 
+              [(ngModel)]="consultationForm.diagnostic"
+              class="form-control form-control-modern"
+              rows="3"
+              placeholder="Décrivez le diagnostic du patient..."
+              required>
+            </textarea>
+            <small class="text-muted">Requis - Description détaillée du diagnostic</small>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label fw-semibold">Traitement</label>
+                <textarea 
+                  [(ngModel)]="consultationForm.traitement"
+                  class="form-control form-control-modern"
+                  rows="2"
+                  placeholder="Traitement recommandé...">
+                </textarea>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label fw-semibold">Ordonnance</label>
+                <textarea 
+                  [(ngModel)]="consultationForm.ordonnance"
+                  class="form-control form-control-modern"
+                  rows="2"
+                  placeholder="Liste des médicaments...">
+                </textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label fw-semibold">Notes Additionnelles</label>
+            <textarea 
+              [(ngModel)]="consultationForm.notes"
+              class="form-control form-control-modern"
+              rows="2"
+              placeholder="Informations complémentaires...">
+            </textarea>
+          </div>
+        </div>
+
+        <!-- Section 2: Facturation et Paiement -->
+        <div class="form-section">
+          <div class="section-header">
+            <i class="bi bi-receipt"></i>
+            <h5>Facturation et Paiement</h5>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label fw-semibold">
+                  Prix de la Consultation (DHS) <span class="text-danger">*</span>
+                </label>
+                <div class="input-group input-group-modern">
+                  <input 
+                    type="number" 
+                    [(ngModel)]="consultationForm.prixConsultation"
+                    class="form-control"
+                    min="0"
+                    step="10"
+                    required>
+                  <span class="input-group-text">DHS</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-label fw-semibold">Montant Médicaments (DHS)</label>
+                <div class="input-group input-group-modern">
+                  <input 
+                    type="number" 
+                    [(ngModel)]="consultationForm.montantMedicaments"
+                    class="form-control"
+                    min="0"
+                    step="10">
+                  <span class="input-group-text">DHS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Card -->
+          <div class="total-card">
+            <div class="total-row">
+              <span class="total-label">Consultation :</span>
+              <span class="total-value">{{ consultationForm.prixConsultation }} DHS</span>
+            </div>
+            <div class="total-row">
+              <span class="total-label">Médicaments :</span>
+              <span class="total-value">{{ consultationForm.montantMedicaments }} DHS</span>
+            </div>
+            <div class="total-row grand-total">
+              <span class="total-label fw-bold">Total à Payer :</span>
+              <span class="total-value fw-bold text-primary">{{ getMontantTotal() }} DHS</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label fw-semibold">Statut du Paiement</label>
+            <select 
+              [(ngModel)]="consultationForm.statutPaiement"
+              class="form-select form-select-modern">
+              <option value="EN_ATTENTE">En Attente</option>
+              <option value="PAYE">Payé</option>
+            </select>
+            <small class="text-muted">
+              <i class="bi bi-info-circle"></i>
+              Le statut du paiement sera enregistré dans la facture
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-form-footer">
+      <div class="footer-info">
+        <i class="bi bi-shield-check text-primary"></i>
+        <span>Les données seront enregistrées et une facture sera automatiquement générée.</span>
+      </div>
+      <div class="footer-actions">
+        <button class="btn btn-outline-secondary" (click)="closeConsultationForm()">
+          <i class="bi bi-x-lg me-2"></i>Annuler
+        </button>
+        <button 
+          class="btn btn-primary"
+          (click)="submitConsultation()"
+          [disabled]="savingConsultation || !consultationForm.diagnostic.trim()">
+          <i class="bi bi-save me-2"></i>
+          {{ savingConsultation ? 'Enregistrement...' : 'Enregistrer la consultation' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Annulation amélioré -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content elegant-modal">
+      <div class="modal-body p-0">
+        <div class="modal-header-custom danger">
+          <div class="modal-icon-animated">
+            <i class="bi bi-x-lg"></i>
+          </div>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="modal-content-custom">
+          <h4 class="modal-title-custom">Annuler le rendez-vous</h4>
+          <p class="modal-text-custom">Êtes-vous sûr de vouloir annuler ce rendez-vous ? Cette action est irréversible.</p>
+          
+          <div class="rdv-info-preview" *ngIf="selectedRdvToCancel">
+            <div class="preview-header">
+              <i class="bi bi-calendar-check"></i>
+              <span>Détails du rendez-vous</span>
+            </div>
+            <div class="preview-item">
+              <div class="preview-icon">
+                <i class="bi bi-person-circle"></i>
+              </div>
+              <div class="preview-info">
+                <span class="preview-label">Patient</span>
+                <span class="preview-value">{{ selectedRdvToCancel.patientPrenom }} {{ selectedRdvToCancel.patientNom }}</span>
+              </div>
+            </div>
+            <div class="preview-item">
+              <div class="preview-icon">
+                <i class="bi bi-clock"></i>
+              </div>
+              <div class="preview-info">
+                <span class="preview-label">Horaire</span>
+                <span class="preview-value">{{ selectedRdvToCancel.heure }}</span>
+              </div>
+            </div>
+            <div class="preview-item">
+              <div class="preview-icon">
+                <i class="bi bi-calendar"></i>
+              </div>
+              <div class="preview-info">
+                <span class="preview-label">Date</span>
+                <span class="preview-value">{{ selectedRdvToCancel.date | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-buttons">
+            <button class="btn-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-arrow-left me-2"></i>Non, retour
+            </button>
+            <button class="btn-danger" (click)="confirmCancel()">
+              <i class="bi bi-trash3 me-2"></i>Oui, annuler
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Non Venu amélioré -->
+<div class="modal fade" id="noShowModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content elegant-modal">
+      <div class="modal-body p-0">
+        <div class="modal-header-custom warning">
+          <div class="modal-icon-animated">
+            <i class="bi bi-person-x"></i>
+          </div>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="modal-content-custom">
+          <h4 class="modal-title-custom">Patient non présent</h4>
+          <p class="modal-text-custom">Confirmez-vous que le patient ne s'est pas présenté à son rendez-vous ?</p>
+          
+          <div class="rdv-info-preview" *ngIf="selectedRdvToMarkNoShow">
+            <div class="preview-header">
+              <i class="bi bi-calendar-check"></i>
+              <span>Détails du rendez-vous</span>
+            </div>
+            <div class="preview-item">
+              <div class="preview-icon">
+                <i class="bi bi-person-circle"></i>
+              </div>
+              <div class="preview-info">
+                <span class="preview-label">Patient</span>
+                <span class="preview-value">{{ selectedRdvToMarkNoShow.patientPrenom }} {{ selectedRdvToMarkNoShow.patientNom }}</span>
+              </div>
+            </div>
+            <div class="preview-item">
+              <div class="preview-icon">
+                <i class="bi bi-clock"></i>
+              </div>
+              <div class="preview-info">
+                <span class="preview-label">Horaire</span>
+                <span class="preview-value">{{ selectedRdvToMarkNoShow.heure }}</span>
+              </div>
+            </div>
+            <div class="preview-item">
+              <div class="preview-icon">
+                <i class="bi bi-calendar"></i>
+              </div>
+              <div class="preview-info">
+                <span class="preview-label">Date</span>
+                <span class="preview-value">{{ selectedRdvToMarkNoShow.date | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="alert-info">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>Cette action marquera le rendez-vous comme "Non venu"</span>
+          </div>
+          
+          <div class="modal-buttons">
+            <button class="btn-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-arrow-left me-2"></i>Retour
+            </button>
+            <button class="btn-warning" (click)="confirmNoShow()">
+              <i class="bi bi-person-x me-2"></i>Confirmer non venu
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+  <div id="notificationToast" class="toast elegant-toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+    <div class="toast-header">
+      <div class="toast-icon success">
+        <i class="bi bi-check-lg"></i>
+      </div>
+      <strong class="me-auto">Succès</strong>
+      <small>à l'instant</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+    </div>
+    <div class="toast-body">Action effectuée avec succès</div>
+  </div>
+</div>

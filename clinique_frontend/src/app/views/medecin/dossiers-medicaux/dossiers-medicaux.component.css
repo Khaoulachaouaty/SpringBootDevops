@@ -1,0 +1,1008 @@
+/* ============================================
+   DOSSIERS MEDICAUX - DESIGN MODERNE BLEU
+   ============================================ */
+
+:root {
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #60a5fa;
+  --primary-bg: #eff6ff;
+  --success: #10b981;
+  --success-bg: #d1fae5;
+  --warning: #f59e0b;
+  --warning-bg: #fef3c7;
+  --danger: #ef4444;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+/* ==================== CONTAINER PRINCIPAL ==================== */
+
+.dossier-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+  padding: 1.5rem 2rem 2rem 2rem;
+}
+
+/* ==================== HEADER ==================== */
+
+.dossier-header {
+  background: white;
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.header-title h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0;
+}
+
+.header-title p {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+  margin: 0;
+}
+
+/* ==================== RECHERCHE ==================== */
+
+.header-search {
+  min-width: 250px;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-wrapper i {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-400);
+  font-size: 0.9rem;
+}
+
+.search-wrapper .form-control {
+  padding-left: 2.2rem;
+  border-radius: 40px;
+  border: 1px solid var(--gray-200);
+  font-size: 0.85rem;
+  height: 42px;
+  width: 100%;
+}
+
+.search-wrapper .form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ==================== CONTENU PRINCIPAL ==================== */
+
+/* Pas de padding supplémentaire, le container gère tout */
+.dossier-content {
+  width: 100%;
+}
+
+/* Les cartes et le contenu prennent toute la largeur */
+.patients-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  height: 100%;
+}
+
+.card-header-custom {
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, var(--gray-50), white);
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+
+.patient-count {
+  margin-left: auto;
+  background: var(--primary-bg);
+  color: var(--primary);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.patients-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.patients-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.patients-list::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+.patients-list::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 5px;
+}
+
+.patient-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--gray-100);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.patient-item:hover {
+  background: var(--gray-50);
+}
+
+.patient-item.active {
+  background: var(--primary-bg);
+  border-left: 3px solid var(--primary);
+}
+
+.patient-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.patient-info h6 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.2rem;
+  color: var(--gray-800);
+}
+
+.patient-info small {
+  font-size: 0.65rem;
+  color: var(--gray-500);
+}
+
+/* ==================== RÉSUMÉ PATIENT ==================== */
+
+.patient-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.summary-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.summary-icon.info {
+  background: var(--primary-bg);
+  color: var(--primary);
+}
+
+.summary-icon.success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.summary-icon.warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.summary-text label {
+  font-size: 0.6rem;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.summary-text p {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--gray-800);
+}
+
+.summary-text small {
+  font-size: 0.6rem;
+  color: var(--gray-500);
+}
+
+/* ==================== TABS ==================== */
+
+.dossier-tabs {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.tabs-navigation {
+  display: flex;
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 0.5rem;
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tab-btn:hover {
+  background: var(--gray-100);
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.tabs-content {
+  padding: 1.25rem;
+}
+
+/* ==================== LISTE CONSULTATIONS ==================== */
+
+.consultations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.consultation-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--gray-50);
+  border-radius: 16px;
+  transition: all 0.2s;
+}
+
+.consultation-item:hover {
+  background: var(--gray-100);
+  transform: translateX(4px);
+}
+
+.consultation-date {
+  text-align: center;
+  min-width: 65px;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.consultation-date .day {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  display: block;
+  line-height: 1;
+}
+
+.consultation-date .month {
+  font-size: 0.65rem;
+  color: var(--gray-500);
+}
+
+.consultation-date .year {
+  font-size: 0.55rem;
+  color: var(--gray-400);
+  display: block;
+}
+
+.consultation-info {
+  flex: 1;
+}
+
+.consultation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.consultation-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.badge-success {
+  background: var(--success-bg);
+  color: var(--success);
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.65rem;
+}
+
+.badge-warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.65rem;
+}
+
+.consultation-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.detail-btn {
+  background: var(--primary-bg);
+  color: var(--primary);
+}
+
+.detail-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.facture-btn {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.facture-btn:hover {
+  background: var(--success);
+  color: white;
+}
+
+/* ==================== DOSSIER MEDICAL ==================== */
+
+.dossier-card {
+  background: var(--gray-50);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.dossier-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: white;
+  border-bottom: 1px solid var(--gray-200);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.dossier-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dossier-title i {
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
+.dossier-title h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--gray-800);
+}
+
+.dossier-info {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+  font-weight: normal;
+}
+
+.btn-edit {
+  background: var(--primary-bg);
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.2s;
+}
+
+.btn-edit:hover:not(:disabled) {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-edit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dossier-content-view {
+  padding: 1.25rem;
+}
+
+.dossier-field pre {
+  margin: 0;
+  font-family: inherit;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 0.85rem;
+  color: var(--gray-700);
+  line-height: 1.6;
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--gray-200);
+}
+
+.dossier-content-edit {
+  padding: 1.25rem;
+}
+
+.dossier-content-edit textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.2s;
+}
+
+.dossier-content-edit textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+}
+
+.btn-cancel {
+  padding: 0.5rem 1rem;
+  background: var(--gray-100);
+  border: none;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: var(--gray-200);
+}
+
+.btn-save {
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-save:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-save:disabled, .btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==================== ÉTATS VIDES ==================== */
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--gray-500);
+}
+
+.empty-state i {
+  font-size: 2.5rem;
+  color: var(--gray-300);
+  margin-bottom: 1rem;
+}
+
+.btn-new {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-new:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.empty-patients {
+  text-align: center;
+  padding: 2rem;
+  color: var(--gray-500);
+}
+
+.empty-patients i {
+  font-size: 2.5rem;
+  color: var(--gray-300);
+  margin-bottom: 0.5rem;
+}
+
+/* ==================== CARTE BIENVENUE ==================== */
+
+.welcome-card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-icon {
+  width: 70px;
+  height: 70px;
+  background: var(--primary-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  color: var(--primary);
+  font-size: 1.8rem;
+}
+
+.welcome-card h3 {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.welcome-card p {
+  color: var(--gray-500);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+/* ==================== LOADING ==================== */
+
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+}
+
+.spinner {
+  width: 35px;
+  height: 35px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ==================== MODAL DÉTAILS ==================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  backdrop-filter: blur(4px);
+}
+
+.modal-detail {
+  background: white;
+  border-radius: 28px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header-detail {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.modal-icon-detail {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.modal-header-detail h3 {
+  flex: 1;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal-close-detail {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-close-detail:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.modal-body-detail {
+  padding: 1.5rem;
+}
+
+.detail-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.detail-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.detail-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+}
+
+.detail-section-title i {
+  font-size: 1rem;
+}
+
+.detail-section-content {
+  font-size: 0.9rem;
+  color: var(--gray-700);
+  line-height: 1.5;
+}
+
+.ordonnance-content pre {
+  margin: 0;
+  font-family: inherit;
+  white-space: pre-wrap;
+  background: var(--gray-50);
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+
+.modal-footer-detail {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--gray-100);
+}
+
+.btn-facture {
+  flex: 1;
+  padding: 0.7rem;
+  background: linear-gradient(135deg, var(--success), #059669);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-facture:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-close-modal {
+  flex: 1;
+  padding: 0.7rem;
+  background: var(--gray-100);
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-close-modal:hover {
+  background: var(--gray-200);
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 992px) {
+  .patient-summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tabs-navigation {
+    flex-direction: column;
+  }
+  
+  .tab-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .dossier-container {
+    padding: 1rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .header-title {
+    flex-direction: column;
+  }
+  
+  .header-search {
+    width: 100%;
+  }
+  
+  .search-wrapper .form-control {
+    width: 100%;
+  }
+  
+  .consultation-item {
+    flex-direction: column;
+  }
+  
+  .consultation-date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .consultation-date .year {
+    display: inline-block;
+    margin-left: 0.5rem;
+  }
+  
+  .dossier-header-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .edit-actions {
+    flex-direction: column;
+  }
+  
+  .btn-cancel, .btn-save {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .modal-footer-detail {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 576px) {
+  .patient-summary-grid {
+    gap: 0.75rem;
+  }
+  
+  .summary-card {
+    padding: 0.75rem;
+  }
+  
+  .summary-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  
+  .tabs-content {
+    padding: 1rem;
+  }
+  
+  .consultation-actions {
+    flex-direction: column;
+  }
+  
+  .modal-detail {
+    width: 95%;
+    margin: 1rem;
+  }
+}

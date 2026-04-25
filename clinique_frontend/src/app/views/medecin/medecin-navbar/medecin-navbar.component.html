@@ -1,0 +1,75 @@
+<nav class="medecin-navbar navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center gap-2" 
+       href="javascript:void(0)"
+       (click)="navigateTo('/medecin/dashboard')">
+      
+      <div class="medecin-logo d-flex align-items-center justify-content-center">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             width="24" 
+             height="24" 
+             viewBox="0 0 24 24" 
+             fill="none" 
+             stroke="white" 
+             stroke-width="2" 
+             stroke-linecap="round" 
+             stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+
+      <div class="brand-text">
+        <span class="fw-bold text-white">MediClinic</span>
+        <span class="brand-role">Espace Médecin</span>
+      </div>
+    </a>
+
+    <!-- Toggle mobile -->
+    <button class="navbar-toggler border-0" type="button" (click)="isMenuOpen = !isMenuOpen">
+      <i class="bi" [class.bi-list]="!isMenuOpen" [class.bi-x-lg]="isMenuOpen" style="color: white; font-size: 1.5rem;"></i>
+    </button>
+
+    <!-- Menu -->
+    <div class="collapse navbar-collapse" [class.show]="isMenuOpen">
+      <ul class="navbar-nav mx-auto align-items-center gap-1">
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/medecin/dashboard')">
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/medecin/rendezvous')">
+            Mes Rendez-vous
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/medecin/calendrier')">
+            Calendrier
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/medecin/patients')">
+            Mes Patients
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/medecin/dossiers')">
+            Dossiers Médicaux
+          </a>
+        </li>
+      </ul>
+
+      <!-- Actions avec espace entre les éléments -->
+      <div class="d-flex align-items-center gap-3">
+        <!-- Notifications -->
+        <app-notification-medecin></app-notification-medecin>
+
+        <!-- Déconnexion -->
+        <button type="button" class="btn-logout" (click)="logout()" title="Déconnexion">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

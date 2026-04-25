@@ -1,0 +1,457 @@
+/* ============================================
+   PATIENT PAIEMENT - DESIGN MODERNE VERT
+   ============================================ */
+
+:root {
+  --primary: #10b981;
+  --primary-dark: #059669;
+  --primary-light: #34d399;
+  --primary-bg: #d1fae5;
+  --success: #10b981;
+  --success-bg: #d1fae5;
+  --warning: #f59e0b;
+  --warning-bg: #fef3c7;
+  --danger: #ef4444;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+.paiement-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+}
+
+/* Header */
+.paiement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: white;
+  padding: 1.25rem 1.75rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.header-left h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0;
+}
+
+.header-left p {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  margin: 0;
+}
+
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card.total {
+  border-left: 4px solid var(--primary);
+}
+
+.stat-card.paid {
+  border-left: 4px solid var(--success);
+}
+
+.stat-card.pending {
+  border-left: 4px solid var(--warning);
+}
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.stat-card.total .stat-icon {
+  background: var(--primary-bg);
+  color: var(--primary);
+}
+
+.stat-card.paid .stat-icon {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.stat-card.pending .stat-icon {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--gray-800);
+  display: block;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+}
+
+/* Loading */
+.loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 20px;
+}
+
+.spinner-modern {
+  width: 45px;
+  height: 45px;
+}
+
+.spinner-ring {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Factures Card */
+.factures-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.card-header-custom {
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, var(--gray-50), white);
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+
+.card-header-custom i {
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
+.card-header-custom h5 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--gray-800);
+}
+
+.badge-count {
+  margin-left: auto;
+  background: var(--primary-bg);
+  color: var(--primary);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--gray-500);
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: var(--gray-300);
+  margin-bottom: 1rem;
+}
+
+/* Factures List */
+.factures-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.facture-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--gray-100);
+  transition: all 0.2s;
+}
+
+.facture-item:hover {
+  background: var(--gray-50);
+}
+
+.facture-date {
+  text-align: center;
+  min-width: 65px;
+  padding: 0.5rem;
+  background: var(--gray-50);
+  border-radius: 12px;
+}
+
+.facture-date .day {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  display: block;
+  line-height: 1;
+}
+
+.facture-date .month {
+  font-size: 0.65rem;
+  color: var(--gray-500);
+}
+
+.facture-date .year {
+  font-size: 0.55rem;
+  color: var(--gray-400);
+  display: block;
+}
+
+.facture-details {
+  flex: 1;
+}
+
+.facture-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.facture-header h6 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.specialite-badge {
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  background: var(--primary-bg);
+  color: var(--primary);
+  border-radius: 20px;
+}
+
+.facture-diagnostic {
+  font-size: 0.85rem;
+  color: var(--gray-700);
+  margin-bottom: 0.75rem;
+}
+
+.facture-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.status-badge.paid {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.status-badge.pending {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.btn-payment {
+  background: linear-gradient(135deg, var(--success), #059669);
+  border: none;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btn-payment:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-facture {
+  background: transparent;
+  border: 1px solid var(--gray-300);
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btn-facture:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-bg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .facture-item {
+    flex-direction: column;
+  }
+  
+  .facture-date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .facture-date .year {
+    display: inline-block;
+    margin-left: 0.5rem;
+  }
+  
+  .facture-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-payment, .btn-facture {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .paiement-container .container-fluid {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .paiement-header {
+    padding: 1rem;
+  }
+  
+  .header-left {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .header-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    
+  }
+  
+  .header-left h2 {
+    font-size: 1.2rem;
+  }
+}

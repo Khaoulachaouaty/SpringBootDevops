@@ -1,0 +1,359 @@
+/* ============================================
+   FACTURE/INVOICE COMPONENT
+   ============================================ */
+
+.facture-container {
+  min-height: calc(100vh - 200px);
+  padding: 2rem 0;
+}
+
+/* Header */
+.facture-header {
+  background: linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%);
+  border-bottom: 2px solid #e7e5e4;
+  padding: 1.75rem 0;
+  margin-bottom: 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header-title {
+  flex: 1;
+  min-width: 200px;
+}
+
+.header-title h2 {
+  font-size: 1.75rem;
+  color: #1c1917;
+  margin-bottom: 0;
+}
+
+.facture-number {
+  font-size: 0.95rem;
+  color: #a8a29e;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Content */
+.facture-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Facture Preview */
+.facture-preview {
+  background: white;
+  border: 1px solid #e7e5e4;
+  border-radius: 1.25rem;
+  padding: 3rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  page-break-after: avoid;
+}
+
+/* Clinic Header */
+.facture-clinic-header {
+  text-align: center;
+  border-bottom: 2px solid #e7e5e4;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+}
+
+.facture-clinic-header h3 {
+  font-size: 1.75rem;
+  color: #10b981;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+}
+
+.facture-clinic-header p {
+  color: #57534e;
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+}
+
+/* Document Title */
+.facture-title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.facture-title h2 {
+  font-size: 2rem;
+  color: #1c1917;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+/* Facture Info */
+.facture-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.info-item {
+  text-align: center;
+}
+
+.info-item label {
+  display: block;
+  font-size: 0.8rem;
+  color: #a8a29e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.info-item p {
+  color: #1c1917;
+  font-weight: 600;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.info-item .badge {
+  display: inline-block;
+}
+
+/* Parties (From/To) */
+.facture-parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.party-box {
+  padding: 1.25rem;
+  background: #fafaf9;
+  border-radius: 0.75rem;
+  border-left: 3px solid #10b981;
+}
+
+.party-box h6 {
+  font-size: 0.8rem;
+  color: #a8a29e;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.party-box p {
+  margin: 0.25rem 0;
+  color: #57534e;
+  font-size: 0.95rem;
+}
+
+/* Items Table */
+.facture-items {
+  margin-bottom: 2rem;
+}
+
+.facture-items .table {
+  margin-bottom: 0;
+}
+
+.facture-items .table thead th {
+  background: linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%);
+  border-bottom: 2px solid #e7e5e4;
+  color: #1c1917;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.facture-items .table tbody td {
+  padding: 1.25rem 1rem;
+  vertical-align: middle;
+  color: #57534e;
+  border-bottom: 1px solid #e7e5e4;
+}
+
+.facture-items .table tbody tr:last-child td {
+  border-bottom: 2px solid #e7e5e4;
+}
+
+/* Totals */
+.facture-totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fafaf9;
+  border-radius: 0.75rem;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 300px;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e7e5e4;
+  color: #57534e;
+  font-size: 1rem;
+}
+
+.total-row span:first-child {
+  flex: 1;
+}
+
+.total-row span:last-child {
+  text-align: right;
+  font-weight: 600;
+  min-width: 100px;
+}
+
+.grand-total {
+  border-bottom: 2px solid #10b981;
+  border-top: 2px solid #e7e5e4;
+  margin-top: 0.5rem;
+  padding: 1rem 0;
+  color: #10b981;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+/* Notes */
+.facture-notes {
+  background: #eff6ff;
+  border-left: 3px solid #2563eb;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.facture-notes h6 {
+  color: #1e40af;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.facture-notes p {
+  color: #1e40af;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Footer */
+.facture-footer {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #e7e5e4;
+  color: #a8a29e;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.facture-footer p {
+  margin: 0;
+}
+
+/* Actions */
+.facture-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.facture-actions .btn {
+  min-width: 180px;
+}
+
+/* Print Styles */
+@media print {
+  .facture-header,
+  .facture-actions,
+  .btn,
+  button {
+    display: none;
+  }
+
+  .facture-preview {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  body {
+    background: white;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .facture-container {
+    padding: 1rem 0;
+  }
+
+  .facture-header {
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .header-content {
+    padding: 0 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-title h2 {
+    font-size: 1.5rem;
+  }
+
+  .facture-content {
+    padding: 0 1rem;
+  }
+
+  .facture-preview {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+  }
+
+  .facture-parties {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .facture-actions {
+    flex-direction: column;
+  }
+
+  .facture-actions .btn {
+    width: 100%;
+  }
+}

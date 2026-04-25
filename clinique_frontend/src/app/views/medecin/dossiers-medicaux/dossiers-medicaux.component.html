@@ -1,0 +1,309 @@
+<div class="dossier-container">
+  <!-- Header -->
+  <div class="dossier-header">
+    <div class="header-content">
+      <div class="header-title">
+        <div class="header-icon">
+          <i class="bi bi-folder-medical"></i>
+        </div>
+        <div>
+          <h2>Dossiers Médicaux</h2>
+          <p>Consultez et gérez les dossiers médicaux de vos patients</p>
+        </div>
+      </div>
+      <div class="header-search">
+        <div class="search-wrapper">
+          <i class="bi bi-search"></i>
+          <input type="text" class="form-control" placeholder="Rechercher un patient..." [(ngModel)]="searchTerm">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="dossier-content">
+    <div class="row g-4">
+      <!-- Patients List -->
+      <div class="col-lg-3">
+        <div class="patients-card">
+          <div class="card-header-custom">
+            <i class="bi bi-people-fill"></i>
+            <span>Mes Patients</span>
+            <span class="patient-count">{{ filteredPatients.length }}</span>
+          </div>
+          <div class="card-body-custom p-0">
+            <div *ngIf="loading" class="loading-state">
+              <div class="spinner"></div>
+              <p>Chargement...</p>
+            </div>
+
+            <div *ngIf="!loading && filteredPatients.length === 0" class="empty-patients">
+              <i class="bi bi-inbox"></i>
+              <p>Aucun patient trouvé</p>
+            </div>
+
+            <div class="patients-list" *ngIf="!loading && filteredPatients.length > 0">
+              <div *ngFor="let patient of filteredPatients" 
+                   class="patient-item" 
+                   [class.active]="selectedPatient?.id === patient.id"
+                   (click)="selectPatient(patient)">
+                
+                <div class="patient-avatar">
+                  {{ getInitials(patient.prenom, patient.nom) }}
+                </div>
+
+                <div class="patient-info">
+                  <h6>{{ patient.prenom }} {{ patient.nom }}</h6>
+                  <small>{{ patient.email }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Patient Details -->
+      <div class="col-lg-9" *ngIf="selectedPatient; else noPatientSelected">
+        
+        <!-- Patient Summary -->
+        <div class="patient-summary-grid">
+          <div class="summary-card">
+            <div class="summary-icon info">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <div class="summary-text">
+              <label>Patient</label>
+              <p><strong>{{ selectedPatient.prenom }} {{ selectedPatient.nom }}</strong></p>
+              <small>{{ selectedPatient.email }}</small>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon success">
+              <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="summary-text">
+              <label>Consultations</label>
+              <p>{{ patientConsultations.length }}</p>
+              <small>au total</small>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon warning">
+              <i class="bi bi-telephone"></i>
+            </div>
+            <div class="summary-text">
+              <label>Contact</label>
+              <p>{{ selectedPatient.tel || 'Non renseigné' }}</p>
+              <small>Téléphone</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="dossier-tabs">
+          <div class="tabs-navigation">
+            <button class="tab-btn" [class.active]="activeTab === 'consultations'" (click)="activeTab = 'consultations'">
+              <i class="bi bi-calendar-check"></i> Consultations
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'dossier'" (click)="activeTab = 'dossier'">
+              <i class="bi bi-file-text"></i> Dossier médical
+            </button>
+          </div>
+
+          <div class="tabs-content">
+            
+            <!-- ==================== ONGLET CONSULTATIONS ==================== -->
+            <div class="tab-content" *ngIf="activeTab === 'consultations'">
+              <div *ngIf="patientConsultations.length === 0" class="empty-state">
+                <i class="bi bi-calendar-x"></i>
+                <p>Aucune consultation enregistrée</p>
+                <button class="btn-new" (click)="nouvelleConsultation()">
+                  <i class="bi bi-plus-lg"></i> Nouvelle consultation
+                </button>
+              </div>
+
+              <div class="consultations-list" *ngIf="patientConsultations.length > 0">
+                <div *ngFor="let consultation of patientConsultations" class="consultation-item">
+                  <!-- Date -->
+                  <div class="consultation-date">
+                    <span class="day">{{ consultation.dateConsultation | date:'dd' }}</span>
+                    <span class="month">{{ consultation.dateConsultation | date:'MMM' | uppercase }}</span>
+                    <span class="year">{{ consultation.dateConsultation | date:'yyyy' }}</span>
+                  </div>
+                  
+                  <!-- Infos résumé -->
+                  <div class="consultation-info">
+                    <div class="consultation-header">
+                      <span class="consultation-price">
+                        <i class="bi bi-cash-stack"></i> {{ formatMontant(consultation.montantTotal || consultation.prixConsultation) }}
+                      </span>
+                      <span class="badge" [class]="getPaiementStatusClass(consultation.statutPaiement || 'EN_ATTENTE')">
+                        {{ getPaiementStatusLabel(consultation.statutPaiement || 'EN_ATTENTE') }}
+                      </span>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="consultation-actions">
+                      <button class="action-btn detail-btn" (click)="openDetailModal(consultation)" title="Voir détails">
+                        <i class="bi bi-eye"></i> Détails
+                      </button>
+                      <button class="action-btn facture-btn" (click)="voirFacture(consultation.id)" title="Voir facture">
+                        <i class="bi bi-receipt"></i> Facture
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ==================== ONGLET DOSSIER MÉDICAL ==================== -->
+            <div class="tab-content" *ngIf="activeTab === 'dossier'">
+              <div class="dossier-card">
+                <div class="dossier-header-card">
+                  <div class="dossier-title">
+                    <i class="bi bi-file-text"></i>
+                    <h4>Dossier Médical</h4>
+                    <span class="dossier-info">Antécédents, allergies, traitements de fond</span>
+                  </div>
+                  <button class="btn-edit" *ngIf="!editingDossier" (click)="editingDossier = true" [disabled]="updating">
+                    <i class="bi bi-pencil"></i> Modifier
+                  </button>
+                </div>
+
+                <!-- Mode visualisation -->
+                <div *ngIf="!editingDossier" class="dossier-content-view">
+                  <div class="dossier-field">
+                    <pre>{{ dossierText || 'Aucune information médicale enregistrée' }}</pre>
+                  </div>
+                </div>
+
+                <!-- Mode édition -->
+                <div *ngIf="editingDossier" class="dossier-content-edit">
+                  <textarea [(ngModel)]="dossierText" 
+                            class="form-control" 
+                            rows="12"
+                            placeholder="=== ANTÉCÉDENTS MÉDICAUX ===&#10;- Hypertension artérielle (2018)&#10;- Diabète type 2 (2020)&#10;&#10;=== ALLERGIES ===&#10;- Pénicilline (allergie sévère)&#10;- Arachides&#10;&#10;=== TRAITEMENTS EN COURS ===&#10;- Ramipril 5mg/jour&#10;- Metformine 500mg x2/jour&#10;&#10;=== ANTÉCÉDENTS CHIRURGICAUX ===&#10;- Appendicectomie (2015)&#10;&#10;=== AUTRES INFORMATIONS ===&#10;- Vaccination COVID-19 à jour"></textarea>
+                  <div class="edit-actions">
+                    <button class="btn-cancel" (click)="cancelEditDossier()" [disabled]="updating">Annuler</button>
+                    <button class="btn-save" (click)="saveDossierMedical()" [disabled]="updating">
+                      <i class="bi" [class.bi-save]="!updating" [class.bi-hourglass-split]="updating"></i>
+                      {{ updating ? 'Enregistrement...' : 'Enregistrer' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noPatientSelected>
+        <div class="col-lg-9">
+          <div class="welcome-card">
+            <div class="welcome-icon">
+              <i class="bi bi-folder-medical"></i>
+            </div>
+            <h3>Sélectionnez un patient</h3>
+            <p>Choisissez un patient dans la liste de gauche pour consulter son dossier médical</p>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL DÉTAILS CONSULTATION ==================== -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetailModal()">
+  <div class="modal-detail" (click)="$event.stopPropagation()">
+    <div class="modal-header-detail">
+      <div class="modal-icon-detail">
+        <i class="bi bi-file-medical"></i>
+      </div>
+      <h3>Détails de la consultation</h3>
+      <button class="modal-close-detail" (click)="closeDetailModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-detail" *ngIf="selectedConsultation">
+      <!-- Date -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i class="bi bi-calendar"></i>
+          <span>Date de consultation</span>
+        </div>
+        <div class="detail-section-content">
+          {{ selectedConsultation.dateConsultation | date:'EEEE d MMMM yyyy' | titlecase }}
+        </div>
+      </div>
+
+      <!-- Diagnostic -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i class="bi bi-clipboard2-pulse"></i>
+          <span>Diagnostic</span>
+        </div>
+        <div class="detail-section-content">
+          {{ selectedConsultation.diagnostic || 'Non spécifié' }}
+        </div>
+      </div>
+
+      <!-- Traitement -->
+      <div class="detail-section" *ngIf="selectedConsultation.traitement">
+        <div class="detail-section-title">
+          <i class="bi bi-capsule"></i>
+          <span>Traitement</span>
+        </div>
+        <div class="detail-section-content">
+          {{ selectedConsultation.traitement }}
+        </div>
+      </div>
+
+      <!-- Ordonnance -->
+      <div class="detail-section" *ngIf="selectedConsultation.ordonnance">
+        <div class="detail-section-title">
+          <i class="bi bi-prescription2"></i>
+          <span>Ordonnance</span>
+        </div>
+        <div class="detail-section-content ordonnance-content">
+          <pre>{{ selectedConsultation.ordonnance }}</pre>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="detail-section" *ngIf="selectedConsultation.notes">
+        <div class="detail-section-title">
+          <i class="bi bi-chat-text"></i>
+          <span>Notes</span>
+        </div>
+        <div class="detail-section-content">
+          {{ selectedConsultation.notes }}
+        </div>
+      </div>
+
+      <!-- Prix -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <i class="bi bi-cash-stack"></i>
+          <span>Montant</span>
+        </div>
+        <div class="detail-section-content">
+          <strong>{{ formatMontant(selectedConsultation.montantTotal || selectedConsultation.prixConsultation) }}</strong>
+          <span class="badge" [class]="getPaiementStatusClass(selectedConsultation.statutPaiement || 'EN_ATTENTE')" style="margin-left: 1rem;">
+            {{ getPaiementStatusLabel(selectedConsultation.statutPaiement || 'EN_ATTENTE') }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer-detail">
+      <button class="btn-facture" (click)="voirFacture(selectedConsultation!.id)" *ngIf="selectedConsultation?.id">
+        <i class="bi bi-receipt"></i> Voir la facture
+      </button>
+      <button class="btn-close-modal" (click)="closeDetailModal()">Fermer</button>
+    </div>
+  </div>
+</div>

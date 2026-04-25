@@ -1,0 +1,181 @@
+<div class="admin-page">
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold text-success mb-1">Nouveau Médecin</h2>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow-lg rounded-4">
+          <div class="card-body p-4">
+
+
+            <!-- Alerts -->
+            @if (errorMessage) {
+              <div class="alert alert-danger d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <small>{{ errorMessage }}</small>
+              </div>
+            }
+
+            @if (successMessage) {
+              <div class="alert alert-success d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <small>{{ successMessage }}</small>
+              </div>
+            }
+
+            <!-- Form -->
+            <form [formGroup]="medecinForm" (ngSubmit)="onSubmit()">
+              <div class="row g-3">
+                <!-- Nom -->
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Nom *</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    [class.is-invalid]="medecinForm.get('nom')?.invalid && medecinForm.get('nom')?.touched"
+                    formControlName="nom" 
+                    placeholder="Ben Salem">
+                  @if (medecinForm.get('nom')?.invalid && medecinForm.get('nom')?.touched) {
+                    <div class="invalid-feedback small">Nom requis (min 2 caractères)</div>
+                  }
+                </div>
+                
+                <!-- Prénom -->
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Prénom *</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    [class.is-invalid]="medecinForm.get('prenom')?.invalid && medecinForm.get('prenom')?.touched"
+                    formControlName="prenom" 
+                    placeholder="Mohamed">
+                  @if (medecinForm.get('prenom')?.invalid && medecinForm.get('prenom')?.touched) {
+                    <div class="invalid-feedback small">Prénom requis (min 2 caractères)</div>
+                  }
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="mb-3 mt-3">
+                <label class="form-label small fw-semibold">Email professionnel *</label>
+                <input 
+                  type="email" 
+                  class="form-control" 
+                  [class.is-invalid]="medecinForm.get('email')?.invalid && medecinForm.get('email')?.touched"
+                  formControlName="email" 
+                  placeholder="dr.mohamed@mediclinic.com">
+                @if (medecinForm.get('email')?.invalid && medecinForm.get('email')?.touched) {
+                  <div class="invalid-feedback small">Email valide requis</div>
+                }
+              </div>
+
+              <!-- Téléphone (8 chiffres) -->
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Téléphone</label>
+                <input 
+                  type="tel" 
+                  class="form-control" 
+                  [class.is-invalid]="medecinForm.get('tel')?.invalid && medecinForm.get('tel')?.touched"
+                  formControlName="tel" 
+                  placeholder="20123456">
+                @if (medecinForm.get('tel')?.invalid && medecinForm.get('tel')?.touched) {
+                  <div class="invalid-feedback small">8 chiffres requis (ex: 20123456)</div>
+                }
+              </div>
+
+              <!-- Spécialité -->
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Spécialité *</label>
+                <select 
+                  class="form-select" 
+                  [class.is-invalid]="medecinForm.get('specialite')?.invalid && medecinForm.get('specialite')?.touched"
+                  formControlName="specialite">
+                  <option value="">Choisir...</option>
+                  @for (spec of specialites; track spec) {
+                    <option [value]="spec">{{ spec }}</option>
+                  }
+                </select>
+                @if (medecinForm.get('specialite')?.invalid && medecinForm.get('specialite')?.touched) {
+                  <div class="invalid-feedback small">Spécialité requise</div>
+                }
+              </div>
+
+              <div class="row g-3">
+                <!-- Mot de passe -->
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Mot de passe *</label>
+                  <div class="input-group">
+                    <input 
+                      [type]="showPassword ? 'text' : 'password'" 
+                      class="form-control" 
+                      [class.is-invalid]="medecinForm.get('password')?.invalid && medecinForm.get('password')?.touched"
+                      formControlName="password" 
+                      placeholder="6 caractères min">
+                    <button 
+                      type="button" 
+                      class="btn btn-outline-secondary" 
+                      (click)="showPassword = !showPassword">
+                      <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                    </button>
+                  </div>
+                  @if (medecinForm.get('password')?.invalid && medecinForm.get('password')?.touched) {
+                    <div class="invalid-feedback small d-block">Mot de passe requis (min 6 caractères)</div>
+                  }
+                </div>
+                
+                <!-- Confirmer -->
+                <div class="col-md-6">
+                  <label class="form-label small fw-semibold">Confirmer *</label>
+                  <div class="input-group">
+                    <input 
+                      [type]="showConfirmPassword ? 'text' : 'password'" 
+                      class="form-control" 
+                      [class.is-invalid]="(medecinForm.get('confirmPassword')?.invalid || medecinForm.hasError('passwordMismatch')) && medecinForm.get('confirmPassword')?.touched"
+                      formControlName="confirmPassword" 
+                      placeholder="Répéter">
+                    <button 
+                      type="button" 
+                      class="btn btn-outline-secondary" 
+                      (click)="showConfirmPassword = !showConfirmPassword">
+                      <i class="bi" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
+                    </button>
+                  </div>
+                  @if (medecinForm.hasError('passwordMismatch') && medecinForm.get('confirmPassword')?.touched) {
+                    <div class="invalid-feedback small d-block">Les mots de passe ne correspondent pas</div>
+                  }
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 mt-4">
+                <button 
+                  type="button" 
+                  class="btn btn-outline-secondary flex-grow-1" 
+                  (click)="medecinForm.reset(); errorMessage = '';">
+                  Annuler
+                </button>
+                <button 
+                  type="submit" 
+                  class="btn btn-warning flex-grow-1 text-white" 
+                  [disabled]="isLoading" 
+                  style="background: #f59e0b; border: none;">
+                  @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-1"></span>
+                    <span>Création...</span>
+                  } @else {
+                    <i class="bi bi-check-lg me-1"></i>
+                    Créer le compte
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

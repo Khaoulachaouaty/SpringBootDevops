@@ -1,0 +1,67 @@
+<nav class="admin-navbar navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center gap-2" 
+       href="javascript:void(0)"
+       (click)="navigateTo('/admin/dashboard')">
+      
+      <div class="admin-logo d-flex align-items-center justify-content-center">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             width="24" 
+             height="24" 
+             viewBox="0 0 24 24" 
+             fill="none" 
+             stroke="white" 
+             stroke-width="2" 
+             stroke-linecap="round" 
+             stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+
+      <span class="fw-bold text-white">MediClinic Admin</span>
+    </a>
+
+    <!-- Toggle mobile -->
+    <button class="navbar-toggler border-0" type="button" (click)="isMenuOpen = !isMenuOpen">
+      <i class="bi" [class.bi-list]="!isMenuOpen" [class.bi-x-lg]="isMenuOpen" style="color: white; font-size: 1.5rem;"></i>
+    </button>
+
+    <!-- Menu -->
+    <div class="collapse navbar-collapse" [class.show]="isMenuOpen">
+      <ul class="navbar-nav mx-auto align-items-center gap-1">
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/admin/dashboard')">
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/admin/medecins')">
+            Médecins
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/admin/patients')">
+            Patients
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0)" (click)="navigateTo('/admin/rendezvous')">
+            Rendez-vous
+          </a>
+        </li>
+      </ul>
+
+      <!-- Bouton déconnexion amélioré -->
+      <div class="ms-3">
+        <button type="button" class="btn-logout" (click)="logout()" title="Déconnexion">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+          </svg>
+          <span class="logout-text">Déconnexion</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

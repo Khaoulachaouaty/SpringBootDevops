@@ -1,0 +1,255 @@
+<div class="dashboard-wrapper">
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="dashboard-header mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="fw-bold mb-1">Tableau de bord</h2>
+          <p class="text-muted mb-0">Vue d'ensemble de la clinique</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-light" (click)="loadData()">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+          <a routerLink="/admin/create-medecin" class="btn btn-warning text-white">
+            <i class="bi bi-plus-lg me-2"></i>Nouveau médecin
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="text-muted mt-2">Chargement des données...</p>
+      </div>
+    } @else {
+      <!-- Stats Cards -->
+      <div class="row g-4 mb-4">
+        <!-- Patients -->
+        <div class="col-md-6 col-lg-3">
+          <div class="stat-card stat-patients">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <p class="stat-label mb-1">PATIENTS</p>
+                <h3 class="stat-value mb-0">{{ stats.totalPatients }}</h3>
+                <small class="stat-change text-success">
+                  <i class="bi bi-arrow-up-short"></i>+{{ stats.nouveauxPatientsMois}} ce mois
+                </small>
+              </div>
+              <div class="stat-icon bg-success bg-opacity-10 text-success">
+                <i class="bi bi-people-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Médecins -->
+        <div class="col-md-6 col-lg-3">
+          <div class="stat-card stat-medecins">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <p class="stat-label mb-1">MÉDECINS</p>
+                <h3 class="stat-value mb-0">{{ stats.totalMedecins }}</h3>
+                <small class="stat-change text-warning">
+                  {{ stats.totalSpecialites }} spécialités
+                </small>
+              </div>
+              <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                <i class="bi bi-heart-pulse-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RDV -->
+        <div class="col-md-6 col-lg-3">
+          <div class="stat-card stat-rdv">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <p class="stat-label mb-1">RDJ AUJOURD'HUI</p>
+                <h3 class="stat-value mb-0">{{ stats.rdvAujourdhui }}</h3>
+                <small class="stat-change text-muted">
+                  À venir
+                </small>
+              </div>
+              <div class="stat-icon bg-info bg-opacity-10 text-info">
+                <i class="bi bi-calendar-check-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Occupation -->
+        <div class="col-md-6 col-lg-3">
+          <div class="stat-card stat-occupation">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <p class="stat-label mb-1">OCCUPATION</p>
+                <h3 class="stat-value mb-0">{{ stats.tauxOccupation }}%</h3>
+                <small class="stat-change text-success">
+                  Bonne capacité
+                </small>
+              </div>
+              <div class="stat-icon bg-danger bg-opacity-10 text-danger">
+                <i class="bi bi-graph-up-arrow"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphiques et Tableaux -->
+      <div class="row g-4">
+        <!-- Graphique RDV -->
+        <div class="col-lg-8">
+          <div class="content-card">
+            <div class="card-header-custom">
+              <h5 class="fw-semibold mb-0">Activité des rendez-vous</h5>
+              <small class="text-muted">Évolution sur l'année</small>
+            </div>
+            <div class="card-body">
+              <!-- Barres simulées -->
+              <div class="chart-container">
+                <div class="d-flex align-items-end justify-content-between gap-2" style="height: 200px;">
+                  @for (val of rdvParMois; track $index) {
+                    <div class="d-flex flex-column align-items-center flex-grow-1">
+                      <div class="bar bg-success rounded-top" 
+                           [style.height.%]="(val / 100) * 100"
+                           [style.opacity]="$index === 9 ? 1 : 0.7"></div>
+                      <small class="mt-2 text-muted small">{{ mois[$index] }}</small>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Répartition spécialités -->
+        <div class="col-lg-4">
+          <div class="content-card">
+            <div class="card-header-custom">
+              <h5 class="fw-semibold mb-0">Top Spécialités</h5>
+              <small class="text-muted">Par nombre de médecins</small>
+            </div>
+            <div class="card-body">
+              @for (item of getMedecinsParSpecialite(); track item.specialite) {
+                <div class="specialite-item d-flex align-items-center justify-content-between py-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success bg-opacity-10 text-success">
+                      {{ item.count }}
+                    </span>
+                    <span class="small">{{ item.specialite }}</span>
+                  </div>
+                  <div class="progress flex-grow-1 ms-3" style="height: 6px; max-width: 100px;">
+                    <div class="progress-bar bg-success" 
+                         [style.width.%]="(item.count / stats.totalMedecins) * 100"></div>
+                  </div>
+                </div>
+              } @empty {
+                <p class="text-muted text-center py-4">Aucune donnée</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Liste Médecins -->
+        <div class="col-lg-6">
+          <div class="content-card">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="fw-semibold mb-0">Médecins récents</h5>
+                <small class="text-muted">{{ medecins.length }} professionnels</small>
+              </div>
+              <a routerLink="/admin/create-medecin" class="btn btn-sm btn-success">
+                +
+              </a>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="small text-muted fw-semibold">MÉDECIN</th>
+                    <th class="small text-muted fw-semibold">SPÉCIALITÉ</th>
+                    <th class="small text-muted fw-semibold">CONTACT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (med of medecins.slice(0, 5); track med.id) {
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="avatar-sm bg-success bg-opacity-10 text-success fw-semibold">
+                            {{ med.prenom.charAt(0) }}{{ med.nom.charAt(0) }}
+                          </div>
+                          <span class="fw-medium small">Dr. {{ med.prenom }} {{ med.nom }}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="badge bg-warning bg-opacity-10 text-warning small">
+                          {{ med.specialite }}
+                        </span>
+                      </td>
+                      <td class="small text-muted">{{ med.email }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="3" class="text-center text-muted py-4">
+                        Aucun médecin. <a routerLink="/admin/create-medecin">En créer un</a>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Liste Patients -->
+        <div class="col-lg-6">
+          <div class="content-card">
+            <div class="card-header-custom">
+              <h5 class="fw-semibold mb-0">Patients récents</h5>
+              <small class="text-muted">{{ patients.length }} inscrits</small>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="small text-muted fw-semibold">PATIENT</th>
+                    <th class="small text-muted fw-semibold">CONTACT</th>
+                    <th class="small text-muted fw-semibold">INSCRIPTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (pat of patients.slice(0, 5); track pat.id) {
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="avatar-sm bg-primary bg-opacity-10 text-primary fw-semibold">
+                            {{ pat.prenom.charAt(0) }}{{ pat.nom.charAt(0) }}
+                          </div>
+                          <span class="fw-medium small">{{ pat.prenom }} {{ pat.nom }}</span>
+                        </div>
+                      </td>
+                      <td class="small text-muted">{{ pat.tel || pat.email }}</td>
+                      <td class="small text-muted">Récente</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="3" class="text-center text-muted py-4">Aucun patient</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

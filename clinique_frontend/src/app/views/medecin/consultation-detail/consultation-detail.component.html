@@ -1,0 +1,121 @@
+<div class="consultation-container">
+  <!-- Header -->
+  <div class="consultation-header">
+    <div class="header-content">
+      <div class="back-button-container">
+        <button class="btn btn-outline-secondary btn-sm" (click)="retour()" title="Retour">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+      </div>
+      <div class="header-title">
+        <h2>Détail de la Consultation</h2>
+        <span class="consultation-id">#{{ consultationId }}</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary btn-sm" title="Imprimer">
+          <i class="bi bi-printer"></i> Imprimer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="consultation-content">
+    <!-- Patient Information -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-8">
+        <div class="card card-primary">
+          <div class="card-header">
+            <i class="bi bi-person-check me-2"></i>Informations du Patient
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <label class="form-label text-muted">Nom Complet</label>
+                <p class="fw-bold">Patient Name</p>
+              </div>
+              <div class="col-sm-6 mb-3">
+                <label class="form-label text-muted">Email</label>
+                <p>patient@example.com</p>
+              </div>
+              <div class="col-sm-6 mb-3">
+                <label class="form-label text-muted">Téléphone</label>
+                <p>+33 6 XX XX XX XX</p>
+              </div>
+              <div class="col-sm-6 mb-3">
+                <label class="form-label text-muted">Date de Naissance</label>
+                <p>01/01/1990</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consultation Status -->
+      <div class="col-lg-4">
+        <div class="card card-info h-100">
+          <div class="card-header">
+            <i class="bi bi-info-circle me-2"></i>Statut
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label text-muted">État</label>
+              <span class="badge badge-success">
+                <i class="bi bi-check-circle me-1"></i>Complétée
+              </span>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted">Date</label>
+              <p class="fw-bold">15/01/2024</p>
+            </div>
+            <div>
+              <label class="form-label text-muted">Durée</label>
+              <p>30 minutes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consultation Details -->
+    <div class="card card-primary mb-4">
+      <div class="card-header">
+        <i class="bi bi-file-text me-2"></i>Détails de la Consultation
+      </div>
+      <div class="card-body">
+        <div class="mb-4">
+          <h6 class="text-muted text-uppercase fw-bold mb-2">Motif de Consultation</h6>
+          <p>Ajouter le motif de la consultation ici</p>
+        </div>
+
+        <div class="mb-4">
+          <h6 class="text-muted text-uppercase fw-bold mb-2">Diagnostic</h6>
+          <p>Ajouter le diagnostic ici</p>
+        </div>
+
+        <div class="mb-4">
+          <h6 class="text-muted text-uppercase fw-bold mb-2">Traitement Prescrit</h6>
+          <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            Aucun traitement prescrit
+          </div>
+        </div>
+
+        <div>
+          <h6 class="text-muted text-uppercase fw-bold mb-2">Recommandations</h6>
+          <p>Ajouter les recommandations ici</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card-footer-actions">
+      <button class="btn btn-primary">
+        <i class="bi bi-pencil me-2"></i>Éditer
+      </button>
+      <button class="btn btn-outline-danger">
+        <i class="bi bi-trash me-2"></i>Supprimer
+      </button>
+    </div>
+  </div>
+</div>

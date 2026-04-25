@@ -1,0 +1,325 @@
+/* views/patient/prendre-rdv/prendre-rdv.component.css */
+
+/* ===== CARTE MÉDECIN AMÉLIORÉE ===== */
+.medecin-card {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.medecin-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(25, 135, 84, 0.15);
+  border-color: rgba(25, 135, 84, 0.3);
+}
+
+.medecin-card.border-success {
+  background: linear-gradient(145deg, #d1e7dd 0%, #badbcc 100%);
+  box-shadow: 0 8px 24px rgba(25, 135, 84, 0.25);
+  transform: scale(1.02);
+  border-color: #198754;
+}
+
+/* Avatar du médecin */
+.medecin-avatar {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.medecin-card:hover .medecin-avatar {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Badge spécialité */
+.badge-specialite {
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #212529;
+  font-weight: 600;
+  padding: 0.4em 0.8em;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* ===== GRILLE DES CRÉNEAUX AMÉLIORÉE ===== */
+.creneaux-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 0.75rem;
+}
+
+.creneau-btn {
+  position: relative;
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  overflow: hidden;
+}
+
+.creneau-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.creneau-btn:hover::before {
+  left: 100%;
+}
+
+/* Créneau libre */
+.creneau-libre {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border-color: #dee2e6;
+  color: #198754;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.creneau-libre:hover {
+  background: linear-gradient(145deg, #198754 0%, #146c43 100%);
+  color: white;
+  border-color: #198754;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
+}
+
+/* Créneau sélectionné */
+.creneau-selectionne {
+  background: linear-gradient(145deg, #0d6efd 0%, #0a58ca 100%);
+  color: white;
+  border-color: #0d6efd;
+  box-shadow: 0 8px 20px rgba(13, 110, 253, 0.3);
+  transform: scale(1.05);
+}
+
+.creneau-selectionne::after {
+  content: '✓';
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+/* ===== ANIMATION CHECKMARK ===== */
+.success-animation {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.checkmark-circle {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 
+    0 12px 40px rgba(25, 135, 84, 0.4),
+    inset 0 2px 10px rgba(255,255,255,0.2);
+  position: relative;
+}
+
+.checkmark-circle::before {
+  content: '';
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border: 3px solid rgba(25, 135, 84, 0.2);
+  border-radius: 50%;
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+.checkmark-circle i {
+  color: white;
+  font-size: 3.5rem;
+  animation: checkmark 0.5s ease 0.4s both;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0) rotate(-180deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes checkmark {
+  from { transform: scale(0) rotate(-45deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* ===== HEADER AMÉLIORÉ ===== */
+.card-header-gradient {
+  background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-header-gradient::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translateX(-30%) translateY(-30%) rotate(0deg); }
+  50% { transform: translateX(30%) translateY(30%) rotate(180deg); }
+}
+
+/* ===== ALERTES STYLISÉES ===== */
+.alert-soft-success {
+  background: linear-gradient(145deg, #d1e7dd 0%, #c3e0d6 100%);
+  border: none;
+  border-left: 4px solid #198754;
+  border-radius: 0 12px 12px 0;
+  box-shadow: 0 4px 12px rgba(25, 135, 84, 0.1);
+}
+
+.alert-soft-info {
+  background: linear-gradient(145deg, #cff4fc 0%, #b6effb 100%);
+  border: none;
+  border-left: 4px solid #0dcaf0;
+  border-radius: 0 12px 12px 0;
+  box-shadow: 0 4px 12px rgba(13, 202, 240, 0.1);
+}
+
+/* ===== BOUTONS AMÉLIORÉS ===== */
+.btn-hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hover-lift:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
+}
+
+/* ===== RÉCAPITULATIF STYLISÉ ===== */
+.recap-card {
+  background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.recap-item {
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+.recap-item:hover {
+  transform: translateX(5px);
+}
+
+/* ===== INPUT DATE STYLISÉ ===== */
+input[type="date"].form-control-lg {
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+}
+
+input[type="date"].form-control-lg:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15);
+}
+
+/* ===== ÉTATS DE CHARGEMENT ===== */
+.loading-state {
+  background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  border: 2px dashed #dee2e6;
+}
+
+.spinner-custom {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3em;
+  color: #198754;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .creneaux-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .creneau-btn {
+    padding: 0.6rem 0.3rem;
+    font-size: 0.85rem;
+  }
+  
+  .checkmark-circle {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .checkmark-circle i {
+    font-size: 2.5rem;
+  }
+  
+  .medecin-card {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* ===== UTILITAIRES ===== */
+.text-gradient-success {
+  background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-success-glow {
+  box-shadow: 0 0 20px rgba(25, 135, 84, 0.3);
+}
+
+/* Animation pour les cartes qui apparaissent */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.5s ease forwards;
+}

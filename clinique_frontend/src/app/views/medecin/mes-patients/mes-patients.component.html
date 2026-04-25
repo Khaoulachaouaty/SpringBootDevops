@@ -1,0 +1,87 @@
+<div class="patients-container">
+  <div class="container-fluid py-4 px-4">
+    <!-- En-tête -->
+    <div class="patients-header mb-4">
+      <div class="header-left">
+        <div class="header-icon">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <div>
+          <h2 class="mb-0">Mes Patients</h2>
+          <p class="text-muted mb-0 small">Consultez et gérez vos patients</p>
+        </div>
+      </div>
+      <div class="header-right" *ngIf="!loading && patients.length > 0">
+        <div class="patients-stats">
+          <span class="stats-number">{{ patients.length }}</span>
+          <span class="stats-label">patients</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-wrapper">
+      <div class="spinner-modern">
+        <div class="spinner-ring"></div>
+      </div>
+      <p class="mt-3 text-muted">Chargement des patients...</p>
+    </div>
+
+    <!-- Aucun patient -->
+    <div *ngIf="!loading && patients.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <i class="bi bi-people"></i>
+      </div>
+      <h5>Aucun patient</h5>
+      <p class="text-muted">Aucun patient n'est associé à votre compte</p>
+    </div>
+
+    <!-- Grille patients -->
+    <div class="row g-4" *ngIf="!loading && patients.length > 0">
+      <div class="col-xl-3 col-lg-4 col-md-6" *ngFor="let patient of patients">
+        <div class="patient-card">
+          <!-- Badge RDV -->
+          <div class="rdv-badge">
+            <i class="bi bi-calendar-check"></i>
+            <span>{{ patient.nbRdv }} RDV</span>
+          </div>
+
+          <!-- Avatar -->
+          <div class="patient-avatar">
+            <span>{{ patient.prenom?.charAt(0) || '' }}{{ patient.nom?.charAt(0) || '' }}</span>
+          </div>
+
+          <!-- Infos -->
+          <div class="patient-info">
+            <h5 class="patient-name">{{ patient.prenom }} {{ patient.nom }}</h5>
+            <p class="patient-email">{{ patient.email }}</p>
+          </div>
+
+          <!-- Détails -->
+          <div class="patient-details">
+            <div class="detail-item">
+              <i class="bi bi-telephone-fill"></i>
+              <span>{{ patient.tel || 'Non renseigné' }}</span>
+            </div>
+            <div class="detail-item" *ngIf="patient.dernierRdv">
+              <i class="bi bi-calendar-check-fill"></i>
+              <span>Dernier RDV: {{ patient.dernierRdv | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="patient-actions">
+            <button class="btn-dossier" (click)="viewDossier(patient.id)">
+              <i class="bi bi-folder-open"></i>
+              Dossier
+            </button>
+            <button class="btn-rdv" (click)="nouveauRdv(patient.id)">
+              <i class="bi bi-calendar-plus"></i>
+              RDV
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

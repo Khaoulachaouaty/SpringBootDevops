@@ -1,0 +1,333 @@
+.auth-wrapper {
+  background: linear-gradient(135deg, #fafaf9 0%, #f0fdf4 100%);
+  min-height: 100vh;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 2rem;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15);
+}
+
+.brand-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  border-radius: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(5deg);
+  transition: all 0.3s ease;
+}
+
+.brand-icon:hover {
+  transform: rotate(0deg) scale(1.05);
+}
+
+/* ==================== BOUTON GRADIENT PRINCIPAL ==================== */
+
+.btn-gradient {
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+  border: none;
+  border-radius: 0.75rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
+.btn-gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.35);
+  background: linear-gradient(135deg, #047857 0%, #059669 50%, #10b981 100%);
+}
+
+.btn-gradient:hover::before {
+  left: 100%;
+}
+
+.btn-gradient:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.btn-gradient:disabled {
+  opacity: 0.7;
+  transform: none;
+  cursor: not-allowed;
+  animation: none;
+}
+
+/* Animation de pulsation au focus */
+@keyframes btnPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.btn-gradient:focus {
+  animation: btnPulse 1.5s infinite;
+  outline: none;
+}
+
+/* ==================== BOUTON OUTLINE SECONDARY ==================== */
+
+.btn-outline-secondary {
+  border: 2px solid #e7e5e4;
+  color: #78716c;
+  background: transparent;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  border-color: #059669;
+  color: #059669;
+  background: #f0fdf4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.1);
+}
+
+.btn-outline-secondary:active {
+  transform: translateY(0);
+}
+
+/* ==================== PROGRESS STEPS ==================== */
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.step {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e7e5e4;
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  background: linear-gradient(135deg, #059669, #10b981);
+  transform: scale(1.2);
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+}
+
+.step-line {
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, #e7e5e4, #e7e5e4);
+  border-radius: 2px;
+}
+
+/* ==================== FORM CONTROLS ==================== */
+
+.form-control-sm {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e7e5e4;
+  transition: all 0.3s ease;
+}
+
+.form-control-sm:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.input-group-sm .input-group-text {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem 0 0 0.75rem;
+  background-color: #fafaf9;
+  border: 1px solid #e7e5e4;
+  transition: all 0.3s ease;
+}
+
+.input-group-sm .form-control {
+  border-radius: 0 0.75rem 0.75rem 0;
+  border: 1px solid #e7e5e4;
+}
+
+.input-group-sm .form-control:focus {
+  border-left: none;
+}
+
+.input-group-sm .input-group-text:last-child {
+  border-radius: 0 0.75rem 0.75rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.input-group-sm .input-group-text:last-child:hover {
+  background-color: #f0fdf4;
+}
+
+/* ==================== DIVIDER ==================== */
+
+.divider {
+  position: relative;
+  text-align: center;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e7e5e4, transparent);
+}
+
+.divider-text {
+  position: relative;
+  background: white;
+  padding: 0 0.75rem;
+  color: #a8a29e;
+  font-size: 0.75rem;
+}
+
+/* ==================== TYPOGRAPHIE ==================== */
+
+.form-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #57534e;
+}
+
+h6 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.text-success {
+  color: #059669 !important;
+}
+
+.text-success:hover {
+  color: #047857 !important;
+}
+
+/* ==================== ALERTS ==================== */
+
+.alert {
+  border-radius: 0.75rem;
+  border: none;
+}
+
+.alert-danger {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.alert-success {
+  background-color: #f0fdf4;
+  color: #059669;
+}
+
+/* ==================== INVALID FEEDBACK ==================== */
+
+.invalid-feedback {
+  font-size: 0.75rem;
+  color: #dc2626;
+}
+
+.is-invalid {
+  border-color: #dc2626 !important;
+}
+
+.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+  .auth-card {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .brand-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .brand-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .btn-gradient {
+    padding: 0.6rem;
+  }
+  
+  .btn-outline-secondary {
+    padding: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1rem;
+  }
+  
+  .d-flex.gap-2 {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
+  
+  .btn-outline-secondary,
+  .btn-gradient {
+    width: 100%;
+  }
+}

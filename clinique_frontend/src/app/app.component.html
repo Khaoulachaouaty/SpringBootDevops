@@ -1,0 +1,32 @@
+<!-- src/app/app.component.html -->
+<div class="d-flex flex-column min-vh-100">
+  <!-- Navbar publique - UNIQUEMENT si personne n'est connecté -->
+  @if (showPublicNavbar()) {
+    <app-navbar />
+  }
+  
+  <!-- Navbar admin - si connecté en tant qu'ADMIN -->
+  @if (showAdminNavbar()) {
+    <app-admin-navbar />
+  }
+  
+  <!-- Navbar médecin - si connecté en tant que MEDECIN -->
+  @if (showMedecinNavbar()) {
+    <app-medecin-navbar />
+  }
+  
+  <!-- Navbar patient - si connecté en tant que PATIENT -->
+  @if (showPatientNavbar()) {
+    <app-patient-navbar />
+  }
+  
+  <!-- Contenu principal -->
+  <main class="flex-fill">
+    <router-outlet />
+  </main>
+  
+  <!-- Footer -->
+  @if (showFooter()) {
+    <app-footer />
+  }
+</div>
