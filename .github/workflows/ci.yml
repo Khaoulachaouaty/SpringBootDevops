@@ -132,7 +132,9 @@ jobs:
       - name: OWASP Dependency Check (backend)
         working-directory: backend
         run: mvn dependency-check:check
-        continue-on-error: false
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        continue-on-error: true  # NVD outages are common; Trivy below still blocks on CRITICAL CVEs
 
       - name: npm audit (frontend)
         working-directory: frontend
