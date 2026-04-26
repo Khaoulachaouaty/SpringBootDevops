@@ -10,6 +10,9 @@ spec:
     repoURL: https://github.com/Khaoulachaouaty/SpringBootDevops.git
     targetRevision: main
     path: k8s
+    directory:
+      recurse: true   # k8s/ contains subfolders (backend/, frontend/, mysql/, monitoring/)
+      exclude: '{argocd/*,create-secrets.sh}'  # don't try to apply ArgoCD app to itself or shell script
 
   destination:
     server: https://kubernetes.default.svc
