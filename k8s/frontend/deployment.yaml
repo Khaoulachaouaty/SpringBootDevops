@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: khaoulachaouaty/clinique-frontend:latest
+          image: khaoulachaouati/clinique-frontend:latest
           ports:
             - containerPort: 80
           readinessProbe:
