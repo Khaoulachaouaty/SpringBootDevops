@@ -180,6 +180,12 @@
 					<outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
 					<nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
 					<nvdValidForHours>24</nvdValidForHours>
+					<!-- devtools is dev-only (excluded from prod jar by spring-boot-maven-plugin) -->
+					<skipProvidedScope>true</skipProvidedScope>
+					<skipRuntimeScope>false</skipRuntimeScope>
+					<suppressionFiles>
+						<suppressionFile>owasp-suppressions.xml</suppressionFile>
+					</suppressionFiles>
 				</configuration>
 			</plugin>
 		</plugins>
