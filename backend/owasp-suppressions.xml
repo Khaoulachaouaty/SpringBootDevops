@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+
+  <!--
+    spring-boot-devtools is an OPTIONAL development-only dependency.
+    The spring-boot-maven-plugin EXCLUDES it from the repackaged production JAR
+    (see <excludes><exclude>devtools</exclude></excludes> would be needed if not optional).
+    Since it never reaches production, CVEs against it are not exploitable at runtime.
+  -->
+  <suppress>
+    <notes><![CDATA[
+      spring-boot-devtools is a dev-only dependency, not bundled in production JAR.
+    ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring-boot-devtools@.*$</packageUrl>
+    <cve>CVE-2022-31691</cve>
+  </suppress>
+
+</suppressions>

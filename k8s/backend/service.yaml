@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clinique-backend
+  namespace: clinique
+spec:
+  selector:
+    app: clinique-backend
+  ports:
+    - port: 8082
+      targetPort: 8082
+  type: ClusterIP
+---
+# Alias service named "backend" so the frontend nginx image
+# (which has proxy_pass http://backend:8082) works without rebuild.
+# Same name as the docker-compose service => single image works in both envs.
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: clinique
+spec:
+  selector:
+    app: clinique-backend
+  ports:
+    - port: 8082
+      targetPort: 8082
+  type: ClusterIP

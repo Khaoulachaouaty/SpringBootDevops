@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: clinique
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    rule_files:
+      - /etc/prometheus/alert.rules.yml
+
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets: ["localhost:9090"]
+
+      - job_name: clinique-backend
+        metrics_path: /clinique/actuator/prometheus
+        static_configs:
+          - targets: ["clinique-backend:8082"]
+        scrape_interval: 15s
+
+  alert.rules.yml: |
+    groups:
+      - name: clinique-alerts
+        rules:
+          - alert: BackendDown
+            expr: up{job="clinique-backend"} == 0
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "Backend clinique is down"
+              description: "No scrape from clinique-backend for more than 1 minute."
+
+          - alert: NoHttpRequests
+            expr: rate(http_server_requests_seconds_count{job="clinique-backend"}[5m]) == 0
+            for: 5m
+            labels:
+              severity: warning
+            annotations:
+              summary: "No HTTP requests to backend"
+              description: "Zero requests received for 5 minutes."
