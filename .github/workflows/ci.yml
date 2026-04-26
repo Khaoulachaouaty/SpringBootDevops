@@ -2,9 +2,9 @@ name: CI Pipeline — Clinique
 
 on:
   push:
-    branches: [main, dev]
+    branches: ['**']        # any branch push triggers a run
   pull_request:
-    branches: [main, dev]
+    branches: [main, dev]   # PRs to main/dev still validated
 
 env:
   DOCKER_IMAGE_BACKEND: ${{ secrets.DOCKER_USERNAME }}/clinique-backend
